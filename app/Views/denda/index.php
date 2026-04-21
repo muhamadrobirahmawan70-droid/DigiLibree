@@ -20,7 +20,7 @@
                     <tr>
                         <th class="ps-4 py-3 text-uppercase small fw-bold text-muted">Member</th>
                         <th class="py-3 text-uppercase small fw-bold text-muted">Buku</th>
-                        <th class="py-3 text-uppercase small fw-bold text-muted">Tgl Kembali</th>
+                        <th class="py-3 text-uppercase small fw-bold text-muted">Tanggal Kembali</th>
                         <th class="py-3 text-uppercase small fw-bold text-muted">Denda</th>
                         <th class="py-3 text-center text-uppercase small fw-bold text-muted">Tindakan</th>
                     </tr>
@@ -46,7 +46,7 @@
                         </td>
                         <td>
                             <span class="badge bg-light text-dark border fw-normal">
-                                <?= date('d M Y', strtotime($d['tgl_kembali'])) ?>
+                                <?= date('d M Y', strtotime($d['tanggal_kembali'])) ?>
                             </span>
                         </td>
                         <td>
