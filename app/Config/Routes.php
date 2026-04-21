@@ -34,3 +34,41 @@ $routes->get('/users/delete/(:num)', 'Users::delete/$1', $allRole); // aksi hapu
 $routes->get('users/detail/(:num)', 'Users::detail/$1', $allRole); // aksi detail user
 $routes->get('users/print', 'Users::print', $allRole); // aksi print data user
 $routes->get('users/wa/(:num)', 'Users::wa/$1', $allRole); // aksi kirim ke whatsapp
+
+$routes->get('/buku', 'Buku::index');
+$routes->get('buku/create', 'Buku::create');
+$routes->post('buku/store', 'Buku::store');
+$routes->get('buku/detail/(:num)', 'Buku::detail/$1');
+$routes->get('buku/edit/(:num)', 'Buku::edit/$1');
+$routes->post('buku/update/(:num)', 'Buku::update/$1');
+$routes->get('buku/delete/(:num)', 'Buku::delete/$1');
+$routes->get('buku/print', 'Buku::print');
+$routes->get('buku/wa/(:num)', 'Buku::wa/$1');
+
+
+    // Hapus atau komen kode lama, ganti dengan ini untuk tes
+$routes->get('peminjaman', 'Peminjaman::index',$allRole);
+$routes->get('peminjaman/create', 'Peminjaman::new',$allRole);
+$routes->post('peminjaman/store', 'Peminjaman::store',$allRole); 
+$routes->add('peminjaman/store', 'Peminjaman::store',$allRole); // Tambahan: antisipasi kalau method berubah
+$routes->get('peminjaman/edit/(:num)', 'Peminjaman::edit/$1',$allRole); 
+$routes->post('peminjaman/update/(:num)', 'Peminjaman::update/$1',$allRole); // Proses update
+$routes->get('peminjaman/delete/(:num)', 'Peminjaman::delete/$1',$allRole); // Proses hapus
+$routes->resource('peminjaman', ['except' => 'show']);
+// Route tambahan untuk proses pengembalian buku
+$routes->post('peminjaman/kembalikan/(:num)', 'Peminjaman::kembalikan/$1',$allRole);
+$routes->get('log', 'Log::index',$allRole);
+$routes->get('riwayat', 'Peminjaman::riwayat',$allRole);
+// Tambahkan ini di dalam file Routes.php
+$routes->post('peminjaman/pinjamKilat/(:num)', 'Peminjaman::pinjamKilat/$1');
+$routes->get('peminjaman/riwayat', 'Peminjaman::riwayat');
+$routes->get('log/delete/(:num)', 'Log::delete/$1'); // Hapus log per ID (angka)
+$routes->get('log/clear', 'Log::clear');     // Kosongkan semua log
+// Grouping biar lebih rapi
+$routes->group('denda', function($routes) {
+    $routes->get('/', 'Denda::index');
+    $routes->get('kirimPeringatan/(:any)', 'Denda::kirimPeringatan/$1');
+}); // <-- Pastikan ada kurung tutup ini
+$routes->get('peminjaman/persetujuan', 'Peminjaman::persetujuan');
+$routes->get('peminjaman/approve/(:num)', 'Peminjaman::approve/$1');
+$routes->get('peminjaman/reject/(:num)', 'Peminjaman::reject/$1');
