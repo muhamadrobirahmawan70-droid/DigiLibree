@@ -133,53 +133,56 @@ class Peminjaman extends BaseController
     return redirect()->back()->with('error', 'Gagal simpan data.');
 }
     // --- PROSES PENGEMBALIAN (Sekarang Bisa dilakukan oleh User) ---
-    public function kembalikan($id)
-    {
-        // 1. Ambil data peminjaman
-        $pinjam = $this->pinjamModel->find($id);
-        
-        // Cek apakah datanya ada
-        if (!$pinjam) {
-            return redirect()->back()->with('error', 'Data peminjaman tidak ditemukan!');
-        }
-
-        // 2. Proteksi: Pastikan hanya User yang meminjam buku ini yang bisa mengembalikan
-        // (Biar user lain gak iseng balikin buku orang lain)
-        if (session()->get('role') != 'admin' && $pinjam['id_user'] != session()->get('id')) {
-            return redirect()->back()->with('error', 'Eits, kamu gak berhak mengembalikan buku ini! 👮');
-        }
-
-        $buku = $this->bukuModel->find($pinjam['id_buku']);
-        
-        // 3. Hitung denda jika terlambat (Rp 2.000 / hari)
-        $tgl_kembali = new \DateTime($pinjam['tanggal_kembali']);
-        $tgl_sekarang = new \DateTime(date('Y-m-d'));
-        $denda = 0;
-
-        if ($tgl_sekarang > $tgl_kembali) {
-            $denda = $tgl_sekarang->diff($tgl_kembali)->days * 2000;
-        }
-
-        // 4. Update status pinjam jadi 'kembali'
-        $updateStatus = $this->pinjamModel->update($id, [
-            'status' => 'kembali',
-            'tanggal_pengembalian_asli' => date('Y-m-d'),
-            'denda'  => $denda
-        ]);
-
-        if ($updateStatus) {
-            // 5. Balikin stok buku (+1)
-            $this->bukuModel->update($pinjam['id_buku'], [
-                'tersedia' => $buku['tersedia'] + 1
-            ]);
-            
-            $this->catatLog('Pengembalian Buku', 'User mengembalikan buku: ' . $buku['judul']);
-
-            return redirect()->to('/peminjaman')->with('success', 'Buku berhasil dikembalikan! ' . ($denda > 0 ? 'Denda kamu: Rp ' . number_format($denda, 0, ',', '.') : 'Tepat waktu, mantap!'));
-        }
-
-        return redirect()->back()->with('error', 'Gagal memproses pengembalian.');
+   public function kembalikan($id)
+{
+    $pinjam = $this->pinjamModel->find($id);
+    
+    if (!$pinjam) {
+        return redirect()->back()->with('error', 'Data peminjaman tidak ditemukan!');
     }
+
+    if (session()->get('role') != 'admin' && $pinjam['id_user'] != session()->get('id')) {
+        return redirect()->back()->with('error', 'Eits, kamu gak berhak mengembalikan buku ini! 👮');
+    }
+
+    $buku = $this->bukuModel->find($pinjam['id_buku']);
+    
+    // --- HITUNG DENDA ---
+    $tgl_kembali = new \DateTime($pinjam['tanggal_kembali']);
+    $tgl_sekarang = new \DateTime(date('Y-m-d'));
+    $denda = 0;
+    $status_denda = 'tidak_ada'; // Default jika tepat waktu
+
+    if ($tgl_sekarang > $tgl_kembali) {
+        $selisih = $tgl_sekarang->diff($tgl_kembali)->days;
+        $denda = $selisih * 2000;
+        $status_denda = 'belum_bayar'; // SET STATUS INI!
+    }
+
+    // --- UPDATE DATA ---
+    $updateStatus = $this->pinjamModel->update($id, [
+        'status' => 'kembali',
+        'tanggal_pengembalian_asli' => date('Y-m-d'),
+        'denda' => $denda,
+        'status_denda' => $status_denda // Tambahkan baris ini
+    ]);
+
+    if ($updateStatus) {
+        $this->bukuModel->update($pinjam['id_buku'], [
+            'tersedia' => $buku['tersedia'] + 1
+        ]);
+        
+        $this->catatLog('Pengembalian Buku', 'Buku dikembalikan: ' . $buku['judul'] . ($denda > 0 ? ' dengan denda Rp'.$denda : ''));
+
+        $pesan = ($denda > 0) 
+            ? "Buku kembali! Kamu telat nih, dendanya Rp " . number_format($denda, 0, ',', '.') . ". Segera bayar ya!" 
+            : "Buku kembali tepat waktu! Kamu hebat! 🌟";
+
+        return redirect()->to('/peminjaman')->with('success', $pesan);
+    }
+
+    return redirect()->back()->with('error', 'Gagal memproses pengembalian.');
+}
     public function riwayat()
 {
     $userId = session()->get('id');
@@ -230,6 +233,73 @@ public function reject($id)
     $this->pinjamModel->update($id, ['status' => 'ditolak']);
     return redirect()->back()->with('success', 'Permintaan pinjam ditolak.');
 }
+public function proses_kembali($id_peminjaman)
+{
+    $pinjam = $this->db->table('peminjaman')->where('id_peminjaman', $id_peminjaman)->get()->getRowArray();
+    
+    $tgl_kembali = new \DateTime($pinjam['tanggal_kembali']);
+    $tgl_sekarang = new \DateTime(date('Y-m-d'));
+    
+    $denda = 0;
+    $status_denda = 'tidak_ada';
 
+    // Jika telat
+    if ($tgl_sekarang > $tgl_kembali) {
+        $selisih = $tgl_sekarang->diff($tgl_kembali)->days;
+        $denda = $selisih * 2000; // Contoh: 2rb per hari
+        $status_denda = 'belum_bayar';
+    }
+
+    $this->db->table('peminjaman')->where('id_peminjaman', $id_peminjaman)->update([
+        'tanggal_pengembalian_asli' => date('Y-m-d'),
+        'status'       => 'kembali',
+        'denda'        => $denda,
+        'status_denda' => $status_denda
+    ]);
+
+    return redirect()->back()->with('success', 'Buku kembali! Denda: Rp ' . number_format($denda));
+}
+public function lunas_denda($id)
+{
+    $this->db->table('peminjaman')->where('id_peminjaman', $id)->update(['status_denda' => 'lunas']);
+    return redirect()->back()->with('success', 'Denda telah dibayar tunai! ✅');
+}
+// FUNGSI UNTUK USER: Lapor sudah bayar
+public function konfirmasi_bayar($id) {
+    // Kita ubah status_denda jadi 'proses' (atau tetap 'belum_bayar' tapi kasih penanda)
+    // Di sini saya kasih contoh update status denda agar admin tahu
+    $this->db->table('peminjaman')->where('id_peminjaman', $id)->update([
+        'status_denda' => 'proses' // Pastikan enum di DB ada 'proses'
+    ]);
+    return redirect()->back()->with('success', 'Laporan pembayaran terkirim! Admin akan segera mengecek.');
+}
+
+// FUNGSI UNTUK ADMIN: Tekan tombol lunas
+public function lunas($id) {
+    $this->db->table('peminjaman')->where('id_peminjaman', $id)->update([
+        'status_denda' => 'lunas',
+        'denda'        => 0 // Opsional: nol-kan angka denda setelah lunas
+    ]);
+    return redirect()->back()->with('success', 'Status denda berhasil diubah menjadi LUNAS! ✅');
+}
+public function simpanUlasan()
+{
+    // Pastikan user login
+    $id_user = session()->get('id');
+    if (!$id_user) return redirect()->to('/login');
+
+    $db = \Config\Database::connect();
+    
+    // Simpan ke tabel ulasan (pastikan kamu sudah buat tabelnya di DB)
+    $db->table('ulasan')->insert([
+        'id_user'  => $id_user,
+        'id_buku'  => $this->request->getPost('id_buku'),
+        'rating'   => $this->request->getPost('rating'),
+        'komentar' => $this->request->getPost('komentar'),
+        'created_at' => date('Y-m-d H:i:s')
+    ]);
+
+    return redirect()->to('/peminjaman')->with('success', 'Terima kasih! Ulasan kamu sangat berarti bagi pembaca lain. ⭐');
+}
 
 }

@@ -12,6 +12,7 @@ class BukuModel extends Model
     protected $allowedFields = [
         'isbn',
         'judul',
+        'cover',
         'id_kategori',
         'id_penulis',
         'id_penerbit',
@@ -19,7 +20,7 @@ class BukuModel extends Model
         'jumlah',
         'tersedia',
         'deskripsi',
-        'cover',
+        
         'stok'
     ];
 }

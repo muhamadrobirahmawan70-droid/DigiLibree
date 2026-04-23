@@ -46,9 +46,11 @@
                 <i class="bi bi-clock-history me-3"></i> Log Aktivitas
             </a>
         <?php endif; ?>
+        <?php if (session()->get('role') == 'anggota') : ?>
         <a href="<?= base_url('peminjaman/riwayat') ?>" class="nav-link-custom <?= current_url() == base_url('peminjaman/riwayat') ? 'active' : '' ?>">
             <i class="bi bi-clock-history me-3"></i> Riwayat Membaca
         </a>
+        <?php endif; ?>
         <?php if (session()->get('role') == 'admin' || session()->get('role') == 'petugas') : ?>
         <li class="nav-item mb-2">
     <a href="<?= base_url('denda') ?>" class="nav-link rounded-3 py-2 px-3 d-flex align-items-center transition-all <?= (uri_string() == 'denda') ? 'bg-primary text-white shadow-sm' : 'text-muted' ?>">
@@ -73,6 +75,9 @@
         <a href="<?= base_url('users/edit/' . $idu) ?>" class="nav-link-custom">
             <i class="bi bi-gear me-3"></i> Account Setting
         </a>
+        <?php if (session()->get('role') == 'admin') : ?>
+<a href="<?= base_url('/backup') ?>" class="btn btn-success">Backup Database</a>
+<?php endif; ?>
 
         <a href="<?= site_url('/logout') ?>" class="nav-link-custom text-danger mt-2">
             <i class="bi bi-box-arrow-right me-3"></i> Log Out

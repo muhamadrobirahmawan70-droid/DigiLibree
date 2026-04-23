@@ -35,24 +35,19 @@
             <div class="col-6 col-lg-3">
                 <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-success border-5 h-100">
                     <p class="text-muted small mb-1 fw-bold text-uppercase">Peminjaman Aktif</p>
-                    <h4 class="fw-bold mb-0"><?= number_format($total_pinjam); ?> <span class="fs-6 fw-normal text-muted">Transaksi</span></h4>
+                    <h4 class="fw-bold mb-0"><?= number_format($total_pinjam); ?> <span class="fs-6 fw-normal text-muted">Trx</span></h4>
                 </div>
             </div>
             <div class="col-6 col-lg-3">
                 <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-warning border-5 h-100">
                     <p class="text-muted small mb-1 fw-bold text-uppercase">Total Member</p>
-                    <h4 class="fw-bold mb-0"><?= number_format($total_member); ?> <span class="fs-6 fw-normal text-muted">Orang</span></h4>
+                    <h4 class="fw-bold mb-0"><?= number_format($total_member); ?> <span class="fs-6 fw-normal text-muted">User</span></h4>
                 </div>
             </div>
-            <div class="col-6 col-lg-3">
-                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-info border-5 h-100">
-                    <p class="text-muted small mb-1 fw-bold text-uppercase">Kategori</p>
-                    <h4 class="fw-bold mb-0"><?= number_format($total_kategori); ?> <span class="fs-6 fw-normal text-muted">Genre</span></h4>
-                </div>
-            </div>
+            
 
         <?php else : ?>
-            <div class="col-6 col-lg-4">
+            <div class="col-6 col-lg-3">
                 <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-primary border-5 h-100">
                     <div class="d-flex align-items-center">
                         <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
@@ -65,35 +60,35 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-4">
+            <div class="col-6 col-lg-3">
                 <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-success border-5 h-100">
                     <div class="d-flex align-items-center">
                         <div class="bg-success bg-opacity-10 p-2 rounded-3 me-3">
                             <i class="bi bi-journal-check text-success fs-4"></i>
                         </div>
                         <div>
-                            <p class="text-muted small mb-0 fw-bold">Buku Saya Pinjam</p>
+                            <p class="text-muted small mb-0 fw-bold">Saya Pinjam</p>
                             <h4 class="fw-bold mb-0"><?= number_format($my_pinjam); ?></h4>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-4">
+            <div class="col-6 col-lg-3">
                 <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-info border-5 h-100">
                     <div class="d-flex align-items-center">
                         <div class="bg-info bg-opacity-10 p-2 rounded-3 me-3">
                             <i class="bi bi-clock-history text-info fs-4"></i>
                         </div>
                         <div>
-                            <p class="text-muted small mb-0 fw-bold">Riwayat Bacaan</p>
+                            <p class="text-muted small mb-0 fw-bold">Riwayat</p>
                             <h4 class="fw-bold mb-0"><?= number_format($my_history); ?></h4>
                         </div>
                     </div>
                 </div>
             </div>
+           
         <?php endif; ?>
     </div>
-
     <div class="row">
         <div class="col-lg-8 mb-4">
             <div class="card border-0 shadow-sm rounded-4 h-100">

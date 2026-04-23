@@ -68,7 +68,16 @@ $routes->get('log/clear', 'Log::clear');     // Kosongkan semua log
 $routes->group('denda', function($routes) {
     $routes->get('/', 'Denda::index');
     $routes->get('kirimPeringatan/(:any)', 'Denda::kirimPeringatan/$1');
-}); // <-- Pastikan ada kurung tutup ini
+    $routes->post('lunas/(:num)', 'Denda::lunas/$1'); // Tambahin ini Min!
+});
 $routes->get('peminjaman/persetujuan', 'Peminjaman::persetujuan');
 $routes->get('peminjaman/approve/(:num)', 'Peminjaman::approve/$1');
 $routes->get('peminjaman/reject/(:num)', 'Peminjaman::reject/$1');
+
+$routes->get('/backup', 'Backup::index');
+// Pastikan ini ada di dalam group 'peminjaman' atau sesuaikan dengan URL-mu
+$routes->post('peminjaman/lunas/(:num)', 'Peminjaman::lunas/$1');
+$routes->post('konfirmasi_bayar/(:num)', 'Peminjaman::konfirmasi_bayar/$1');
+$routes->post('peminjaman/simpanUlasan', 'Peminjaman::simpanUlasan');
+
+

@@ -10,10 +10,10 @@ class PeminjamanModel extends Model
     protected $primaryKey = 'id_peminjaman';
 
     // Pastikan field ini sesuai dengan kolom di database Anda
-    protected $allowedFields = [
-        'id_user', 'id_buku', 'tanggal_pinjam', 
-        'tanggal_kembali', 'tanggal_pengembalian_asli', 'status', 'denda'
-    ];
+   protected $allowedFields = [
+    'id_user', 'id_buku', 'tanggal_pinjam', 'tanggal_kembali', 
+    'tanggal_pengembalian_asli', 'status', 'denda', 'status_denda' // <-- Tambahkan ini
+];
 
     /**
      * Mengambil semua data peminjaman dengan Join ke tabel Buku dan Users

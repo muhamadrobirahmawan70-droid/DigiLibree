@@ -14,23 +14,36 @@ class Denda extends BaseController
     {
         // Ambil data peminjaman yang statusnya terlambat atau sudah kembali tapi ada denda
         $builder = $this->db->table('peminjaman');
-        $builder->select('peminjaman.*, users.nama, users.telepon, buku.judul');
+        $builder->select('peminjaman.*, users.username as nama, users.telepon, buku.judul'); // Gunakan username sesuai tabel usermu
         $builder->join('users', 'users.id = peminjaman.id_user');
         $builder->join('buku', 'buku.id_buku = peminjaman.id_buku');
-        $builder->where('peminjaman.denda >', 0); // Hanya yang punya denda
+        $builder->where('peminjaman.denda >', 0); 
         
         $data = [
             'title' => 'Data Denda | DigiLibree',
             'denda' => $builder->get()->getResultArray()
         ];
 
-        return view('denda/index', $data);
+        return view('denda/index', $data); // Mengarah ke folder Views/denda/index.php
+    }
+
+    // FUNGSI BARU: Konfirmasi Lunas oleh Admin
+    public function lunas($id)
+    {
+        $this->db->table('peminjaman')
+             ->where('id_peminjaman', $id)
+             ->update([
+                'status_denda' => 'lunas',
+                'denda'        => 0 // Opsional: denda di-nolkan jika sudah bayar
+             ]);
+
+        return redirect()->to('/denda')->with('success', 'Denda berhasil dilunasi! ✅');
     }
 
     public function kirimPeringatan($idPeminjaman)
     {
         $peminjaman = $this->db->table('peminjaman')
-            ->select('peminjaman.*, users.nama, users.telepon, buku.judul')
+            ->select('peminjaman.*, users.username as nama, users.telepon, buku.judul')
             ->join('users', 'users.id = peminjaman.id_user')
             ->join('buku', 'buku.id_buku = peminjaman.id_buku')
             ->where('id_peminjaman', $idPeminjaman)
@@ -44,7 +57,6 @@ class Denda extends BaseController
         // Template Pesan WA
         $pesan = "Halo *{$namaUser}*,\n\nKami dari *DigiLibree* ingin menginfokan bahwa buku berjudul _'{$judulBuku}'_ sudah melewati batas pengembalian.\n\nTotal denda Anda saat ini: *Rp {$totalDenda}*.\nMohon segera melakukan pengembalian dan pelunasan di loker perpustakaan. Terimakasih! 🙏";
 
-        // Redirect ke API WhatsApp
         return redirect()->to("https://wa.me/{$telp}?text=" . urlencode($pesan));
     }
 }

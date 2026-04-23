@@ -59,6 +59,19 @@
                                 <i class="bi bi-whatsapp me-1"></i> Tagih Sekarang
                             </a>
                         </td>
+                        <td class="text-center pe-4">
+    <div class="d-flex gap-2 justify-content-center">
+        
+
+        <form action="<?= base_url('denda/lunas/' . $d['id_peminjaman']) ?>" method="post">
+            <?= csrf_field(); ?>
+            <button type="submit" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm fw-bold" 
+                    onclick="return confirm('Yakin denda ini sudah dibayar lunas?')">
+                <i class="bi bi-check-circle"></i> Set Lunas
+            </button>
+        </form>
+    </div>
+</td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
