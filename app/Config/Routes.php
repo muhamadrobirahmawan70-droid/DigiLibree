@@ -79,5 +79,9 @@ $routes->get('/backup', 'Backup::index');
 $routes->post('peminjaman/lunas/(:num)', 'Peminjaman::lunas/$1');
 $routes->post('konfirmasi_bayar/(:num)', 'Peminjaman::konfirmasi_bayar/$1');
 $routes->post('peminjaman/simpanUlasan', 'Peminjaman::simpanUlasan');
+// Route untuk proses upload bukti bayar oleh User
+$routes->post('peminjaman/konfirmasi_bayar/(:num)', 'Peminjaman::konfirmasi_bayar/$1');
 
+// Route untuk konfirmasi lunas oleh Admin
+$routes->get('peminjaman/lunas/(:num)', 'Peminjaman::lunas/$1');
 
