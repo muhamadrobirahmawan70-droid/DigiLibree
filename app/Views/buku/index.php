@@ -47,6 +47,19 @@
         </form>
     </div>
 
+    <div class="mb-5">
+        <div class="d-flex align-items-center justify-content-center flex-wrap gap-2">
+            <button class="btn btn-primary rounded-pill px-4 fw-bold filter-btn active" data-filter="all">
+                Semua Koleksi
+            </button>
+            <?php foreach ($kategori as $kat) : ?>
+                <button class="btn btn-outline-dark rounded-pill px-4 fw-bold filter-btn" data-filter="kat-<?= $kat['id_kategori'] ?>">
+                    <?= $kat['nama_kategori'] ?>
+                </button>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
     <?php if (!$keyword && !empty($buku) && !isset($sort)): ?>
     <div class="mb-5">
         <div class="d-flex align-items-center mb-4">
@@ -66,12 +79,7 @@
                         <div class="h3 fw-black text-light-gray m-0"><?= $index + 1 ?></div>
                     </div>
                     <h4 class="fw-bold my-3 text-dark text-limit-1"><?= $t['judul'] ?></h4>
-                    <div class="d-flex align-items-center">
-                        <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center" style="width:35px; height:35px;">
-                            <i class="bi bi-person-fill text-primary"></i>
-                        </div>
-                        <span class="small text-muted fw-semibold"><?= $t['nama_penulis'] ?? '-' ?></span>
-                    </div>
+                    <span class="small text-muted fw-semibold"><i class="bi bi-person me-1"></i><?= $t['nama_penulis'] ?? '-' ?></span>
                 </div>
             </div>
             <?php endif; endforeach; ?>
@@ -79,7 +87,7 @@
     </div>
     <?php endif; ?>
 
-    <div class="row g-4 mt-2">
+    <div class="row g-4" id="book-grid">
         <?php foreach ($buku as $b): ?>
             <?php 
                 $db = \Config\Database::connect();
@@ -87,19 +95,15 @@
                     ->where(['id_buku' => $b['id_buku'], 'id_user' => session()->get('id')])
                     ->whereIn('status', ['pending', 'disetujui', 'dipinjam'])
                     ->orderBy('id_peminjaman', 'DESC')->get()->getRowArray();
-                
-                $sudahSelesai = $db->table('peminjaman')
-                    ->where(['id_buku' => $b['id_buku'], 'id_user' => session()->get('id'), 'status' => 'kembali'])
-                    ->get()->getRowArray();
             ?>
             
-            <div class="col-md-6 col-xl-4">
+            <div class="col-md-6 col-xl-4 book-item kat-<?= $b['id_kategori'] ?>">
                 <div class="book-card-premium">
                     <div class="card border-0 rounded-5 shadow-sm overflow-hidden h-100 bg-white position-relative">
                         
                         <?php if ($b['rata_rating'] >= 4.5): ?>
                             <div class="position-absolute top-0 end-0 m-3" style="z-index: 10;">
-                                <span class="badge bg-warning text-dark rounded-pill shadow-sm py-2 px-3">
+                                <span class="badge bg-warning text-dark rounded-pill shadow-sm py-2 px-3 small fw-bold">
                                     <i class="bi bi-patch-check-fill me-1"></i> Best Choice
                                 </span>
                             </div>
@@ -107,18 +111,14 @@
 
                         <div class="row g-0 h-100">
                             <div class="col-5 bg-gradient-book p-3 d-flex flex-column justify-content-between text-white position-relative">
-                                <div class="badge bg-white bg-opacity-25 rounded-pill py-2 px-3 small border border-white border-opacity-25 glass-badge text-truncate">
-                                    <?= $b['nama_rak'] ?? 'Rak -' ?>
+                                <div class="badge bg-white bg-opacity-25 rounded-pill py-2 px-2 small border border-white border-opacity-25 glass-badge text-truncate text-center">
+                                    <?= $b['nama_rak'] ?? 'Tanpa Rak' ?>
                                 </div>
                                 
                                 <div class="text-center my-2">
-                                    <?php if (!empty($b['cover']) && file_exists(FCPATH . 'uploads/buku/cover/' . $b['cover'])): ?>
-                                        <img src="<?= base_url('uploads/buku/cover/' . $b['cover']) ?>" 
-                                             class="img-fluid rounded-3 shadow-lg icon-float" 
-                                             style="height: 140px; width: 100%; object-fit: cover; border: 2px solid rgba(255,255,255,0.2);">
-                                    <?php else: ?>
-                                        <i class="bi bi-journal-bookmark-fill display-3 opacity-50 icon-float"></i>
-                                    <?php endif; ?>
+                                    <img src="<?= base_url('uploads/buku/cover/' . $b['cover']) ?>" 
+                                         class="img-fluid rounded-3 shadow-lg icon-float" 
+                                         style="height: 140px; width: 100%; object-fit: cover; border: 2px solid rgba(255,255,255,0.2);">
                                 </div>
 
                                 <div class="text-center small opacity-75 fw-bold letter-spacing-1">ID: B-<?= str_pad($b['id_buku'], 3, '0', STR_PAD_LEFT) ?></div>
@@ -126,118 +126,52 @@
                             
                             <div class="col-7 p-4 d-flex flex-column">
                                 <div class="mb-auto">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <small class="text-primary fw-bold text-uppercase ls-1 extra-small"><?= $b['nama_kategori'] ?? 'Umum' ?></small>
-                                        <?php if ($b['total_dipinjam'] >= 5) : ?>
-                                            <span class="text-danger"><i class="bi bi-fire fs-6"></i></span>
-                                        <?php endif; ?>
-                                    </div>
-                                    <h5 class="fw-bold text-dark lh-base text-limit-2 mb-1"><?= $b['judul'] ?></h5>
+                                    <small class="text-primary fw-bold text-uppercase ls-1 extra-small d-block mb-1"><?= $b['nama_kategori'] ?? 'Umum' ?></small>
+                                    <h5 class="fw-bold text-dark lh-base text-limit-2 mb-2"><?= $b['judul'] ?></h5>
                                     
                                     <div class="d-flex align-items-center mb-2">
-                                        <?php if ($b['rata_rating']): ?>
-                                            <div class="text-warning extra-small me-2">
-                                                <?php 
-                                                    $stars = round($b['rata_rating']);
-                                                    for ($i = 1; $i <= 5; $i++) {
-                                                        echo ($i <= $stars) ? '<i class="bi bi-star-fill"></i>' : '<i class="bi bi-star"></i>';
-                                                    }
-                                                ?>
-                                                <span class="text-dark fw-bold ms-1"><?= number_format($b['rata_rating'], 1) ?></span>
-                                            </div>
-                                        <?php else: ?>
-                                            <small class="text-muted extra-small">Belum ada ulasan</small>
-                                        <?php endif; ?>
+                                        <div class="text-warning extra-small me-2">
+                                            <i class="bi bi-star-fill"></i>
+                                            <span class="text-dark fw-bold ms-1"><?= number_format($b['rata_rating'] ?? 0, 1) ?></span>
+                                        </div>
+                                        <div class="vr mx-2 text-muted opacity-25"></div>
+                                        <small class="text-muted extra-small fw-bold"><?= $b['tersedia'] ?> Tersedia</small>
                                     </div>
-
                                     <p class="text-muted small mb-0">Oleh <span class="text-dark fw-semibold"><?= $b['nama_penulis'] ?? '-' ?></span></p>
                                 </div>
 
-                                <div class="my-3">
-                                    <?php if ($checkStatus): ?>
-                                        <div class="status-box <?= $checkStatus['status'] == 'pending' ? 'status-pending' : 'status-active' ?>">
-                                            <div class="dot-pulse me-2"></div>
-                                            <?= $checkStatus['status'] == 'pending' ? 'Diproses' : 'Sedang Dibaca' ?>
-                                        </div>
-                                    <?php else: ?>
-                                        <div class="d-flex gap-3 border-top pt-2">
-                                            <div class="text-start">
-                                                <div class="fw-bold text-dark mb-0 small"><?= $b['tersedia'] ?> <small class="text-muted fw-normal">Eks</small></div>
-                                                <small class="text-muted extra-small fw-bold text-uppercase">Stok</small>
+                                <div class="action-zone mt-3">
+                                    <div class="d-grid gap-2">
+                                        <?php if (session()->get('role') == 'admin'): ?>
+                                            <div class="d-flex gap-2">
+                                                <a href="<?= base_url('buku/edit/' . $b['id_buku']) ?>" class="btn btn-outline-dark btn-sm rounded-3 px-3"><i class="bi bi-pencil-square"></i></a>
+                                                <a href="<?= base_url('buku/detail/' . $b['id_buku']) ?>" class="btn btn-primary btn-sm rounded-3 flex-grow-1 fw-bold">Detail</a>
+                                                <button type="button" class="btn btn-outline-danger btn-sm rounded-3 btn-delete-anim" data-url="<?= base_url('buku/delete/' . $b['id_buku']) ?>"><i class="bi bi-trash3-fill"></i></button>
                                             </div>
-                                            <div class="text-start">
-                                                <div class="fw-bold text-dark mb-0 small"><?= $b['total_dipinjam'] ?> <small class="text-muted fw-normal">Kali</small></div>
-                                                <small class="text-muted extra-small fw-bold text-uppercase">Hits</small>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-
-                                <div class="action-zone">
-                                    <?php if (session()->get('role') == 'admin'): ?>
-                                        <div class="d-flex gap-2">
-                                            <a href="<?= base_url('buku/edit/' . $b['id_buku']) ?>" class="btn btn-outline-dark btn-sm rounded-3"><i class="bi bi-pencil-square"></i></a>
-                                            <a href="<?= base_url('buku/detail/' . $b['id_buku']) ?>" class="btn btn-primary btn-sm rounded-3 flex-grow-1 fw-bold">Detail</a>
-                                            <button type="button" class="btn btn-outline-danger btn-sm rounded-3 btn-delete-anim" data-url="<?= base_url('buku/delete/' . $b['id_buku']) ?>"><i class="bi bi-trash3-fill"></i></button>
-                                        </div>
-                                    <?php else: ?>
-                                        <div class="d-grid gap-2">
+                                        <?php else: ?>
                                             <a href="<?= base_url('buku/detail/' . $b['id_buku']) ?>" class="btn btn-outline-primary btn-sm rounded-3 fw-bold">Detail</a>
                                             <?php if ($checkStatus): ?>
-                                                <a href="<?= base_url('peminjaman') ?>" class="btn btn-light btn-sm rounded-3 fw-bold border">Pantau Status</a>
+                                                <div class="status-box status-active">
+                                                    <div class="dot-pulse me-2"></div> <?= ucfirst($checkStatus['status']) ?>
+                                                </div>
                                             <?php elseif ($b['tersedia'] > 0): ?>
                                                 <form action="<?= base_url('peminjaman/pinjamKilat/' . $b['id_buku']) ?>" method="post">
                                                     <?= csrf_field() ?>
                                                     <button type="submit" class="btn btn-primary btn-sm w-100 rounded-3 fw-bold" onclick="return confirm('Pinjam sekarang?')">
-                                                        <i class="bi bi-lightning-charge-fill"></i> Pinjam Kilat
+                                                        <i class="bi bi-lightning-charge-fill me-1"></i> Pinjam Kilat
                                                     </button>
                                                 </form>
+                                            <?php else: ?>
+                                                <button class="btn btn-light btn-sm rounded-3 fw-bold disabled border">Stok Habis</button>
                                             <?php endif; ?>
-                                        </div>
-                                    <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <?php if (session()->get('role') != 'admin' && $sudahSelesai): ?>
-            <div class="modal fade" id="modalUlasan<?= $b['id_buku'] ?>" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content rounded-4 border-0">
-                        <form action="<?= base_url('peminjaman/simpanUlasan') ?>" method="post">
-                            <?= csrf_field() ?>
-                            <input type="hidden" name="id_buku" value="<?= $b['id_buku'] ?>">
-                            <div class="modal-header border-0">
-                                <h5 class="modal-title fw-bold">Review: <?= $b['judul'] ?></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold small">Rating</label>
-                                    <select name="rating" class="form-select bg-light border-0">
-                                        <option value="5">⭐⭐⭐⭐⭐</option>
-                                        <option value="4">⭐⭐⭐⭐</option>
-                                        <option value="3">⭐⭐⭐</option>
-                                        <option value="2">⭐⭐</option>
-                                        <option value="1">⭐</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold small">Komentar</label>
-                                    <textarea name="komentar" class="form-control bg-light border-0" rows="3"></textarea>
-                                </div>
-                            </div>
-                            <div class="modal-footer border-0">
-                                <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold">Kirim Review</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <?php endif; ?>
-
         <?php endforeach; ?>
     </div>
 </div>
@@ -246,35 +180,62 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .extra-small { font-size: 0.65rem; }
-    .text-limit-1 { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     .text-limit-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .bg-soft-primary { background-color: #eef2ff; }
     .book-card-premium { transition: all 0.4s ease; height: 100%; }
-    .book-card-premium:hover { transform: translateY(-12px); z-index: 5; }
+    .book-card-premium:hover { transform: translateY(-10px); }
     .bg-gradient-book { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); }
     .glass-badge { backdrop-filter: blur(4px); }
-    .status-box { padding: 8px 12px; border-radius: 12px; font-weight: 700; font-size: 0.75rem; display: inline-flex; align-items: center; width: 100%; justify-content: center; }
-    .status-pending { background-color: #fffbeb; color: #b45309; }
-    .status-active { background-color: #f0fdf4; color: #15803d; }
+    .status-box { padding: 6px; border-radius: 8px; font-weight: 700; font-size: 0.7rem; text-align: center; display: flex; align-items: center; justify-content: center; }
+    .status-active { background-color: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
     .dot-pulse { width: 6px; height: 6px; border-radius: 50%; background-color: currentColor; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { transform: scale(0.95); opacity: 1; } 70% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(0.95); opacity: 0; } }
     @keyframes throwToTrash { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0) translateY(500px); opacity: 0; } }
     .item-delete-animation { animation: throwToTrash 0.7s forwards; }
-    .ls-1 { letter-spacing: 1px; }
+    .filter-btn { transition: all 0.3s; }
+    .filter-btn.active { box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3); }
 </style>
 
 <script>
-document.querySelectorAll('.btn-delete-anim').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const url = this.getAttribute('data-url');
-        const card = this.closest('.book-card-premium');
-        if (confirm('Hapus buku ini?')) {
-            card.classList.add('item-delete-animation');
-            setTimeout(() => { window.location.href = url; }, 600);
-        }
+    // JS Filter Kategori
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Toggle Class Active Tombol
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('btn-primary', 'active');
+                b.classList.add('btn-outline-dark');
+            });
+            this.classList.remove('btn-outline-dark');
+            this.classList.add('btn-primary', 'active');
+
+            const filter = this.getAttribute('data-filter');
+            const items = document.querySelectorAll('.book-item');
+
+            items.forEach(item => {
+                if (filter === 'all' || item.classList.contains(filter)) {
+                    item.style.display = 'block';
+                    item.animate([
+                        { opacity: 0, transform: 'scale(0.95)' },
+                        { opacity: 1, transform: 'scale(1)' }
+                    ], { duration: 400, fill: 'forwards' });
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
     });
-});
+
+    // JS Animasi Hapus
+    document.querySelectorAll('.btn-delete-anim').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.getAttribute('data-url');
+            const card = this.closest('.book-item');
+            if (confirm('Hapus buku ini dari perpustakaan?')) {
+                card.classList.add('item-delete-animation');
+                setTimeout(() => { window.location.href = url; }, 600);
+            }
+        });
+    });
 </script>
 
 <?= $this->endSection() ?>

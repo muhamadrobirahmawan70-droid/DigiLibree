@@ -99,6 +99,32 @@
     </div>
 
     <script src="<?= base_url('assets/js/bootstrap.bundle.min.js') ?>"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $(document).ready(function() {
+        // Notifikasi Sukses
+        <?php if (session()->getFlashdata('success')) : ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '<?= session()->getFlashdata('success'); ?>',
+                showConfirmButton: false,
+                timer: 2000,
+                showClass: { popup: 'animate__animated animate__fadeInDown' }
+            });
+        <?php endif; ?>
+
+        // Notifikasi Error/Gagal
+        <?php if (session()->getFlashdata('error')) : ?>
+            Swal.fire({
+                icon: 'error',
+                title: 'Waduh!',
+                text: '<?= session()->getFlashdata('error'); ?>',
+                confirmButtonColor: '#d33',
+            });
+        <?php endif; ?>
+    });
+</script>
 </body>
 
 </html>

@@ -44,93 +44,75 @@
                     <h4 class="fw-bold mb-0"><?= number_format($total_member); ?> <span class="fs-6 fw-normal text-muted">User</span></h4>
                 </div>
             </div>
-            
+            <div class="col-6 col-lg-3">
+                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-danger border-5 h-100">
+                    <p class="text-muted small mb-1 fw-bold text-uppercase">Kas Denda</p>
+                    <h4 class="fw-bold mb-0">Rp <?= number_format($total_denda_lunas, 0, ',', '.'); ?></h4>
+                </div>
+            </div>
 
         <?php else : ?>
             <div class="col-6 col-lg-3">
                 <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-primary border-5 h-100">
                     <div class="d-flex align-items-center">
-                        <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
-                            <i class="bi bi-book text-primary fs-4"></i>
-                        </div>
-                        <div>
-                            <p class="text-muted small mb-0 fw-bold">Buku Tersedia</p>
-                            <h4 class="fw-bold mb-0"><?= number_format($total_buku); ?></h4>
-                        </div>
+                        <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3"><i class="bi bi-book text-primary fs-4"></i></div>
+                        <div><p class="text-muted small mb-0 fw-bold">Buku Tersedia</p><h4 class="fw-bold mb-0"><?= number_format($total_buku); ?></h4></div>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-lg-3">
                 <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-success border-5 h-100">
                     <div class="d-flex align-items-center">
-                        <div class="bg-success bg-opacity-10 p-2 rounded-3 me-3">
-                            <i class="bi bi-journal-check text-success fs-4"></i>
-                        </div>
-                        <div>
-                            <p class="text-muted small mb-0 fw-bold">Saya Pinjam</p>
-                            <h4 class="fw-bold mb-0"><?= number_format($my_pinjam); ?></h4>
-                        </div>
+                        <div class="bg-success bg-opacity-10 p-2 rounded-3 me-3"><i class="bi bi-journal-check text-success fs-4"></i></div>
+                        <div><p class="text-muted small mb-0 fw-bold">Saya Pinjam</p><h4 class="fw-bold mb-0"><?= number_format($my_pinjam); ?></h4></div>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-lg-3">
                 <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-info border-5 h-100">
                     <div class="d-flex align-items-center">
-                        <div class="bg-info bg-opacity-10 p-2 rounded-3 me-3">
-                            <i class="bi bi-clock-history text-info fs-4"></i>
-                        </div>
-                        <div>
-                            <p class="text-muted small mb-0 fw-bold">Riwayat</p>
-                            <h4 class="fw-bold mb-0"><?= number_format($my_history); ?></h4>
-                        </div>
+                        <div class="bg-info bg-opacity-10 p-2 rounded-3 me-3"><i class="bi bi-clock-history text-info fs-4"></i></div>
+                        <div><p class="text-muted small mb-0 fw-bold">Riwayat</p><h4 class="fw-bold mb-0"><?= number_format($my_history); ?></h4></div>
                     </div>
                 </div>
             </div>
-           
+            <div class="col-6 col-lg-3">
+                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-danger border-5 h-100">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-danger bg-opacity-10 p-2 rounded-3 me-3"><i class="bi bi-cash-stack text-danger fs-4"></i></div>
+                        <div><p class="text-muted small mb-0 fw-bold">Denda</p><h4 class="fw-bold mb-0">Rp <?= number_format($my_denda, 0, ',', '.'); ?></h4></div>
+                    </div>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
+
     <div class="row">
         <div class="col-lg-8 mb-4">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
+            <?php if (session()->get('role') == 'admin' || session()->get('role') == 'petugas') : ?>
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-white py-3 border-0 px-4">
+                    <h6 class="m-0 fw-bold text-dark"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Buku Terpopuler</h6>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div style="height: 250px;"><canvas id="chartPopuler"></canvas></div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-header bg-white py-4 border-0 px-4">
                     <h6 class="m-0 font-weight-bold text-dark fw-bold"><i class="bi bi-lightning-charge-fill text-warning me-2"></i>Akses Navigasi</h6>
                 </div>
                 <div class="card-body px-4">
                     <div class="row g-3">
                         <?php if (session()->get('role') == 'admin' || session()->get('role') == 'petugas') : ?>
-                            <div class="col-sm-6">
-                                <a href="<?= base_url('/buku') ?>" class="btn btn-outline-primary border-dashed w-100 py-4 rounded-4 shadow-none text-start px-4">
-                                    <i class="bi bi-collection-play d-block fs-2 mb-2"></i>
-                                    <span class="fw-bold">Manajemen Buku</span>
-                                </a>
-                            </div>
-                            <div class="col-sm-6">
-                                <a href="<?= base_url('users') ?>" class="btn btn-outline-dark w-100 py-4 rounded-4 shadow-none text-start px-4">
-                                    <i class="bi bi-people d-block fs-2 mb-2"></i>
-                                    <span class="fw-bold">Manajemen User</span>
-                                </a>
-                            </div>
-                            <div class="col-sm-6">
-                                <a href="<?= base_url('log') ?>" class="btn btn-outline-secondary w-100 py-4 rounded-4 shadow-none text-start px-4">
-                                    <i class="bi bi-clock-history d-block fs-2 mb-2"></i>
-                                    <span class="fw-bold">Log Aktivitas</span>
-                                </a>
-                            </div>
-                        <?php endif; ?>
-                        
-                        <?php if (session()->get('role') == 'anggota') : ?>
-                            <div class="col-sm-6">
-                                <a href="<?= base_url('/buku') ?>" class="btn btn-primary w-100 py-4 rounded-4 shadow-sm border-0 text-start px-4" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
-                                    <i class="bi bi-search d-block fs-2 mb-2 text-white"></i>
-                                    <span class="fw-bold text-white">Cari & Pinjam Buku</span>
-                                </a>
-                            </div>
-                            <div class="col-sm-6">
-                                <a href="<?= base_url('peminjaman/riwayat') ?>" class="btn btn-outline-info w-100 py-4 rounded-4 shadow-none border-2 text-start px-4">
-                                    <i class="bi bi-journal-text d-block fs-2 mb-2"></i>
-                                    <span class="fw-bold">Riwayat Pinjaman</span>
-                                </a>
-                            </div>
+                            <div class="col-sm-4"><a href="<?= base_url('/buku') ?>" class="btn btn-outline-primary w-100 py-3 rounded-4 shadow-none text-start px-3"><i class="bi bi-collection-play d-block fs-3 mb-1"></i><span class="fw-bold small">Data Buku</span></a></div>
+                            <div class="col-sm-4"><a href="<?= base_url('users') ?>" class="btn btn-outline-dark w-100 py-3 rounded-4 shadow-none text-start px-3"><i class="bi bi-people d-block fs-3 mb-1"></i><span class="fw-bold small">Data User</span></a></div>
+                            <div class="col-sm-4"><a href="<?= base_url('log') ?>" class="btn btn-outline-secondary w-100 py-3 rounded-4 shadow-none text-start px-3"><i class="bi bi-clock-history d-block fs-3 mb-1"></i><span class="fw-bold small">Log Sistem</span></a></div>
+                        <?php else : ?>
+                            <div class="col-sm-6"><a href="<?= base_url('/buku') ?>" class="btn btn-primary w-100 py-4 rounded-4 shadow-sm border-0 text-start px-4" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);"><i class="bi bi-search d-block fs-2 mb-2 text-white"></i><span class="fw-bold text-white">Cari & Pinjam Buku</span></a></div>
+                            <div class="col-sm-6"><a href="<?= base_url('peminjaman/riwayat') ?>" class="btn btn-outline-info w-100 py-4 rounded-4 shadow-none border-2 text-start px-4"><i class="bi bi-journal-text d-block fs-2 mb-2"></i><span class="fw-bold">Riwayat Pinjaman</span></a></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -151,12 +133,31 @@
             </div>
         </div>
     </div>
-
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const dataGrafik = <?= json_encode($grafik ?? []); ?>;
+    if (dataGrafik.length > 0) {
+        const ctx = document.getElementById('chartPopuler').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: dataGrafik.map(item => item.judul),
+                datasets: [{
+                    label: 'Total Pinjam',
+                    data: dataGrafik.map(item => item.total),
+                    backgroundColor: 'rgba(13, 110, 253, 0.7)',
+                    borderRadius: 5
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    }
+</script>
 
 <style>
     .btn { transition: all 0.3s ease; }
     .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
-    .border-dashed { border-style: dashed !important; border-width: 2px !important; }
 </style>
 <?= $this->endSection() ?>

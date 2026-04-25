@@ -15,55 +15,58 @@ class Buku extends BaseController
         $this->db = \Config\Database::connect();
     }
 
-    public function index()
-    {
-        $keyword = $this->request->getGet('keyword');
-        $sort    = $this->request->getGet('sort');
+   public function index()
+{
+    $keyword = $this->request->getGet('keyword');
+    $sort    = $this->request->getGet('sort');
 
-        $builder = $this->db->table('buku');
-        $builder->select('
-            buku.*,
-            kategori.nama_kategori,
-            penulis.nama_penulis,
-            penerbit.nama_penerbit,
-            rak.nama_rak,
-            rak.lokasi,
-            (SELECT COUNT(id_peminjaman) FROM peminjaman WHERE peminjaman.id_buku = buku.id_buku) as total_dipinjam,
-            (SELECT AVG(rating) FROM ulasan WHERE ulasan.id_buku = buku.id_buku) as rata_rating,
-            (SELECT COUNT(id_ulasan) FROM ulasan WHERE ulasan.id_buku = buku.id_buku) as total_ulasan
-        ');
-        $builder->join('kategori', 'kategori.id_kategori = buku.id_kategori', 'left');
-        $builder->join('penulis', 'penulis.id_penulis = buku.id_penulis', 'left');
-        $builder->join('penerbit', 'penerbit.id_penerbit = buku.id_penerbit', 'left');
-        $builder->join('buku_rak', 'buku_rak.id_buku = buku.id_buku', 'left');
-        $builder->join('rak', 'rak.id_rak = buku_rak.id_rak', 'left');
-        $builder->groupBy('buku.id_buku');
-        
-        if ($keyword) {
-            $builder->groupStart()
-                    ->like('buku.judul', $keyword)
-                    ->orLike('penulis.nama_penulis', $keyword)
-                    ->groupEnd();
-        }
+    // 1. Ambil Semua Kategori untuk Header Rak
+    $kategori = $this->db->table('kategori')->get()->getResultArray();
 
-        if ($sort == 'rating') {
-            $builder->orderBy('rata_rating', 'DESC');
-            $builder->orderBy('total_ulasan', 'DESC');
-        } elseif ($sort == 'populer') {
-            $builder->orderBy('total_dipinjam', 'DESC');
-        } else {
-            $builder->orderBy('buku.id_buku', 'DESC');
-        }
-
-        $data = [
-            'title'   => 'Koleksi Buku | DigiLibree',
-            'buku'    => $builder->get()->getResultArray(),
-            'keyword' => $keyword,
-            'sort'    => $sort
-        ];
-
-        return view('buku/index', $data);
+    // 2. Build Query Buku (Sama seperti punya kamu)
+    $builder = $this->db->table('buku');
+    $builder->select('
+        buku.*,
+        kategori.nama_kategori,
+        penulis.nama_penulis,
+        penerbit.nama_penerbit,
+        rak.nama_rak,
+        rak.lokasi,
+        (SELECT COUNT(id_peminjaman) FROM peminjaman WHERE peminjaman.id_buku = buku.id_buku) as total_dipinjam,
+        (SELECT AVG(rating) FROM ulasan WHERE ulasan.id_buku = buku.id_buku) as rata_rating,
+        (SELECT COUNT(id_ulasan) FROM ulasan WHERE ulasan.id_buku = buku.id_buku) as total_ulasan
+    ');
+    $builder->join('kategori', 'kategori.id_kategori = buku.id_kategori', 'left');
+    $builder->join('penulis', 'penulis.id_penulis = buku.id_penulis', 'left');
+    $builder->join('penerbit', 'penerbit.id_penerbit = buku.id_penerbit', 'left');
+    $builder->join('buku_rak', 'buku_rak.id_buku = buku.id_buku', 'left');
+    $builder->join('rak', 'rak.id_rak = buku_rak.id_rak', 'left');
+    $builder->groupBy('buku.id_buku');
+    if ($keyword) {
+        $builder->groupStart()
+                ->like('buku.judul', $keyword)
+                ->orLike('penulis.nama_penulis', $keyword)
+                ->groupEnd();
     }
+
+    if ($sort == 'rating') {
+        $builder->orderBy('rata_rating', 'DESC');
+    } elseif ($sort == 'populer') {
+        $builder->orderBy('total_dipinjam', 'DESC');
+    } else {
+        $builder->orderBy('buku.id_buku', 'DESC');
+    }
+
+    $data = [
+        'title'    => 'Koleksi Buku | DigiLibree',
+        'buku'     => $builder->get()->getResultArray(),
+        'kategori' => $kategori, // Tambahkan ini
+        'keyword'  => $keyword,
+        'sort'     => $sort
+    ];
+
+    return view('buku/index', $data);
+}
 
     public function create()
     {
