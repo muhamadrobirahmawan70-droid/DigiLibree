@@ -1,0 +1,537 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Apr 25, 2026 at 10:31 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `digiperpus`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `buku`
+--
+
+CREATE TABLE `buku` (
+  `id_buku` int(11) NOT NULL,
+  `isbn` varchar(50) DEFAULT NULL,
+  `judul` varchar(255) DEFAULT NULL,
+  `cover` varchar(255) DEFAULT NULL,
+  `id_kategori` int(11) DEFAULT NULL,
+  `id_penulis` int(11) DEFAULT NULL,
+  `id_penerbit` int(11) DEFAULT NULL,
+  `id_rak` int(11) NOT NULL,
+  `tahun_terbit` year(4) DEFAULT NULL,
+  `jumlah` int(11) DEFAULT 0,
+  `tersedia` int(11) DEFAULT 0,
+  `deskripsi` text DEFAULT NULL,
+  `stok` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `buku`
+--
+
+INSERT INTO `buku` (`id_buku`, `isbn`, `judul`, `cover`, `id_kategori`, `id_penulis`, `id_penerbit`, `id_rak`, `tahun_terbit`, `jumlah`, `tersedia`, `deskripsi`, `stok`) VALUES
+(1, '1', 'Filosofi Teras ', '1776964478_cc219611dbf9e449e6f6.jpg', 5, 2, 2, 0, '2017', 6, 3, 'Latih Mentalmu menjadi Kuat', 9),
+(2, '2', 'Matematika', '1776964470_5901242b4840dfd94e96.jpg', 1, 1, 1, 0, '2014', 11, 11, 'Buku Latihan', 11),
+(6, '12', 'Bulan', '1776964461_aa14185ffc7479665b87.jpg', 3, 1, 1, 0, '2020', 23512, 21, 'Bulann', 10),
+(7, '12', 'Cantik Itu Luka', '1776964443_7fcca433133d5e65ba6c.jpg', 3, 3, 2, 0, '0000', 215545, 6, '', 11),
+(8, '133', 'Bumi', '1777136963_c91b5ce3126ccb2efbd5.webp', 3, 4, 3, 0, '0000', 33, 23, '1123hfdhdf', 10),
+(10, '', 'Riyadul Badiyah', '1776964412_7552e5fc40bde32db0b2.png', 6, 4, 3, 0, '2019', 6, 5, 'Ilmu Fiqih adalah Ilmu yang memepelajari tata cara kita melakukan Ibadah', 10),
+(14, '', 'Dilain 1990', '1776964626_2fbc0adb95c70b3753aa.jpg', 3, 1, 1, 0, '2021', 6, 10, 'fdghjsdtjedtzmdz', 6),
+(18, NULL, 'Langkah Demi Langkah', '1776964392_84cfb125717af2827343.jpg', 5, 5, 2, 0, '2024', 0, 7, '', 0),
+(20, NULL, 'How To Rich??', '1776964383_792de13fe61d68cbd22a.avif', 7, 5, 4, 0, '2020', 0, 10, '', 0),
+(21, NULL, 'Laskar Pelangi', '1776964052_48c8dbcdd309d091d838.jpg', 3, 2, 3, 0, '2018', 0, 10, '', 0),
+(22, NULL, 'Atomic Habits', '1776965108_1ce99a34a8032bbc9c9c.jpg', 5, 2, 1, 0, '2021', 0, 10, '', 0),
+(23, NULL, 'Rich Dad Poor Dad', '1776965327_46fff8c4e37177ec97e0.jpg', 5, 3, 1, 0, '2022', 0, 10, '', 0),
+(24, NULL, 'Sapiens', '1776965796_2946761becb482cff525.jpg', 4, 10, 1, 0, '2023', 0, 10, '', 0),
+(25, NULL, 'Psychology Of Money', '1776965863_6e6a34022f1c2858091f.jpg', 7, 5, 1, 0, '2024', 0, 8, '', 0),
+(26, NULL, 'Negeri 5 Menara', '1776965969_dece4198d2ae926f7c88.jpg', 3, 9, 1, 0, '2019', 0, 8, 'Perjuangan santri dengan mantra \"Man Jadda Wajada\".', 0),
+(27, NULL, 'Mantappu JIwa', '1776966038_cf36d0fd402896d936b8.jpg', 5, 9, 1, 0, '2024', 0, 9, 'Perjalanan Jerome kuliah matematika di Jepang.', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `buku_rak`
+--
+
+CREATE TABLE `buku_rak` (
+  `id` int(11) NOT NULL,
+  `id_buku` int(11) DEFAULT NULL,
+  `id_rak` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `buku_rak`
+--
+
+INSERT INTO `buku_rak` (`id`, `id_buku`, `id_rak`) VALUES
+(1, 0, 0),
+(2, 0, 0),
+(3, 3, 0),
+(4, 4, 0),
+(5, 5, 0),
+(6, 6, 2),
+(7, 7, 2),
+(8, 8, 1),
+(9, 13, NULL),
+(14, 2, 1),
+(15, 18, 3),
+(17, 20, 4),
+(18, 21, 2),
+(19, 14, 2),
+(20, 10, 1),
+(21, 1, 1),
+(22, 22, 3),
+(23, 23, 3),
+(24, 24, 7),
+(25, 25, 4),
+(26, 26, 2),
+(27, 27, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kategori`
+--
+
+CREATE TABLE `kategori` (
+  `id_kategori` int(11) NOT NULL,
+  `nama_kategori` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `kategori`
+--
+
+INSERT INTO `kategori` (`id_kategori`, `nama_kategori`) VALUES
+(1, 'Sains & Matematika'),
+(2, 'Teknologi & Komputer'),
+(3, 'Fiksi & Novel'),
+(4, 'Sejarah & Budaya'),
+(5, 'Pengembangan Diri'),
+(6, 'Agama & Spiritualitas'),
+(7, 'Bisnis & Ekonomi'),
+(8, 'Psikologi'),
+(9, 'Kesehatan'),
+(10, 'Seni & Desain');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `log_aktivitas`
+--
+
+CREATE TABLE `log_aktivitas` (
+  `id_log` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `aksi` varchar(100) NOT NULL,
+  `keterangan` text DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `log_aktivitas`
+--
+
+INSERT INTO `log_aktivitas` (`id_log`, `id_user`, `aksi`, `keterangan`, `ip_address`, `created_at`) VALUES
+(3, 1, 'Pinjam Buku', 'User mengajukan pinjam: Bulan (Status: disetujui)', '::1', '2026-04-20 22:29:14'),
+(4, 1, 'Pinjam Buku', 'User mengajukan pinjam: Cantik Itu Luka (Status: disetujui)', '::1', '2026-04-20 22:30:59'),
+(5, 1, 'Pengembalian Buku', 'User mengembalikan buku: Bulan', '::1', '2026-04-20 22:32:58'),
+(6, 1, 'Pinjam Buku', 'User mengajukan pinjam: Filosofi Teras  (Status: disetujui)', '::1', '2026-04-20 23:04:39'),
+(7, 1, 'Pinjam Buku', 'User mengajukan pinjam: Cantik Itu Luka (Status: disetujui)', '::1', '2026-04-20 23:04:58'),
+(8, 1, 'Pinjam Buku', 'User mengajukan pinjam: Bulan (Status: pending)', '::1', '2026-04-20 23:05:04'),
+(9, 1, 'Pengembalian Buku', 'User mengembalikan buku: Bulan', '::1', '2026-04-21 22:37:46'),
+(10, 1, 'Pinjam Buku', 'User mengajukan pinjam: Riyadul Badiyah (Status: pending)', '::1', '2026-04-21 22:47:54'),
+(11, 1, 'Pinjam Buku', 'User mengajukan pinjam: Riyadul Badiyah (Status: pending)', '::1', '2026-04-21 22:49:02'),
+(12, 1, 'Pengembalian Buku', 'Buku dikembalikan: Cantik Itu Luka', '::1', '2026-04-22 13:14:19'),
+(13, 1, 'Pinjam Buku', 'User mengajukan pinjam: Bulan (Status: pending)', '::1', '2026-04-22 13:56:07'),
+(14, 1, 'Pengembalian Buku', 'Buku dikembalikan: Riyadul Badiyah', '::1', '2026-04-23 00:16:04'),
+(15, 1, 'Pinjam Buku', 'User mengajukan pinjam: Langkah Demi Langkah (Status: disetujui)', '::1', '2026-04-23 00:44:00'),
+(16, 1, 'Pinjam Buku', 'User mengajukan pinjam: Laskar Pelangi (Status: pending)', '::1', '2026-04-23 14:13:55'),
+(17, 1, 'Pinjam Buku', 'User mengajukan pinjam: How To Rich?? (Status: pending)', '::1', '2026-04-24 00:18:13'),
+(18, 1, 'Pengembalian Buku', 'Buku dikembalikan: How To Rich?? dengan denda Rp2000', '::1', '2026-04-24 14:15:07'),
+(19, 1, 'Pengembalian Buku', 'Buku dikembalikan: Laskar Pelangi dengan denda Rp2000', '::1', '2026-04-24 14:15:19'),
+(20, 1, 'Pengembalian Buku', 'Buku dikembalikan: Langkah Demi Langkah dengan denda Rp2000', '::1', '2026-04-24 14:15:22'),
+(22, 6, 'Pinjam Buku', 'Meminjam Negeri 5 Menara', '::1', '2026-04-24 23:02:37'),
+(23, 6, 'Pengembalian', 'Buku Filosofi Teras  kembali', '::1', '2026-04-24 23:03:27'),
+(24, 8, 'Pinjam Buku', 'Meminjam Langkah Demi Langkah', '::1', '2026-04-25 00:07:40'),
+(25, 8, 'Pengembalian', 'Buku Langkah Demi Langkah kembali', '::1', '2026-04-25 00:08:26'),
+(26, 6, 'Pinjam Buku', 'Meminjam Filosofi Teras ', '::1', '2026-04-25 02:09:52'),
+(27, 8, 'Pinjam Buku', 'Meminjam Negeri 5 Menara', '::1', '2026-04-25 23:16:16'),
+(28, 8, 'Pinjam Buku', 'Meminjam Psychology', '::1', '2026-04-25 23:16:27'),
+(29, 6, 'Pinjam Buku', 'Meminjam Psychology Of Money', '::1', '2026-04-26 00:35:40');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `peminjaman`
+--
+
+CREATE TABLE `peminjaman` (
+  `id_peminjaman` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `id_buku` int(11) NOT NULL,
+  `tanggal_pinjam` date NOT NULL,
+  `tanggal_kembali` date NOT NULL,
+  `tanggal_pengembalian_asli` date DEFAULT NULL,
+  `status` enum('dipinjam','pending','disetujui','ditolak','kembali') DEFAULT 'disetujui',
+  `denda` int(11) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `status_denda` enum('tidak_ada','belum_bayar','proses','lunas') DEFAULT 'tidak_ada',
+  `bukti_bayar` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `peminjaman`
+--
+
+INSERT INTO `peminjaman` (`id_peminjaman`, `id_user`, `id_buku`, `tanggal_pinjam`, `tanggal_kembali`, `tanggal_pengembalian_asli`, `status`, `denda`, `created_at`, `updated_at`, `status_denda`, `bukti_bayar`) VALUES
+(23, 6, 10, '2026-04-21', '2026-04-28', NULL, '', 0, '2026-04-21 22:47:54', '2026-04-21 22:47:54', 'tidak_ada', NULL),
+(24, 6, 10, '2026-04-21', '2026-04-28', '2026-04-22', 'kembali', 0, '2026-04-21 22:49:02', '2026-04-23 00:16:04', 'tidak_ada', NULL),
+(25, 6, 6, '2026-04-22', '2026-04-29', NULL, 'ditolak', 0, '2026-04-22 13:56:07', '2026-04-22 13:56:42', 'tidak_ada', NULL),
+(26, 6, 18, '2026-04-22', '2026-04-23', '2026-04-24', 'kembali', 0, '2026-04-23 00:44:00', '2026-04-25 02:01:51', 'lunas', NULL),
+(27, 6, 21, '2026-04-23', '2026-04-23', '2026-04-24', 'kembali', 0, '2026-04-23 14:13:55', '2026-04-25 02:12:51', 'lunas', '1777050679_2b27bb712936f8667df4.png'),
+(28, 6, 20, '2026-04-23', '2026-04-23', '2026-04-24', 'kembali', 0, '2026-04-24 00:18:13', '2026-04-24 21:57:21', 'lunas', '1777018433_bd102fbc7f9a4d342feb.jpg'),
+(29, 6, 27, '2026-04-24', '2026-05-01', NULL, 'disetujui', 0, '2026-04-24 22:37:44', '2026-04-24 22:37:44', 'tidak_ada', NULL),
+(30, 6, 26, '2026-04-24', '2026-05-01', NULL, 'disetujui', 0, '2026-04-24 23:02:37', '2026-04-24 23:03:04', 'tidak_ada', NULL),
+(31, 8, 18, '2026-04-24', '2026-05-01', '2026-04-24', 'kembali', 0, '2026-04-25 00:07:40', '2026-04-25 00:08:26', 'tidak_ada', NULL),
+(32, 6, 1, '2026-04-24', '2026-05-01', NULL, 'disetujui', 0, '2026-04-25 02:09:52', '2026-04-25 02:10:09', 'tidak_ada', NULL),
+(33, 8, 26, '2026-04-25', '2026-05-02', NULL, 'disetujui', 0, '2026-04-25 23:16:16', '2026-04-25 23:16:16', 'tidak_ada', NULL),
+(34, 8, 25, '2026-04-25', '2026-05-02', NULL, 'disetujui', 0, '2026-04-25 23:16:27', '2026-04-25 23:16:27', 'tidak_ada', NULL),
+(35, 6, 25, '2026-04-25', '2026-05-02', NULL, 'disetujui', 0, '2026-04-26 00:35:40', '2026-04-26 00:36:23', 'tidak_ada', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `penerbit`
+--
+
+CREATE TABLE `penerbit` (
+  `id_penerbit` int(11) NOT NULL,
+  `nama_penerbit` varchar(100) DEFAULT NULL,
+  `alamat` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `penerbit`
+--
+
+INSERT INTO `penerbit` (`id_penerbit`, `nama_penerbit`, `alamat`) VALUES
+(1, 'Gramedia Pustaka Utama', NULL),
+(2, 'Erlangga', NULL),
+(3, 'Bentang Pustaka', NULL),
+(4, 'Mizan Pustaka', NULL),
+(5, 'Republika', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `penulis`
+--
+
+CREATE TABLE `penulis` (
+  `id_penulis` int(11) NOT NULL,
+  `nama_penulis` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `penulis`
+--
+
+INSERT INTO `penulis` (`id_penulis`, `nama_penulis`) VALUES
+(1, 'Tere Liye'),
+(2, 'Andrea Hirata'),
+(3, 'Dewi Lestari'),
+(4, 'Pramoedya Ananta Toer'),
+(5, 'Boy Candra'),
+(2, 'James Clear'),
+(3, 'Robert T. Kiyosaki'),
+(4, 'Dee Lestari'),
+(5, 'Elon Musk'),
+(6, 'Mark Manson'),
+(7, 'Fiersa Besari'),
+(8, 'Yuval Noah Harari'),
+(9, 'Raditya Dika'),
+(10, 'Dale Carnegie');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rak`
+--
+
+CREATE TABLE `rak` (
+  `id_rak` int(11) NOT NULL,
+  `nama_rak` varchar(50) DEFAULT NULL,
+  `lokasi` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `rak`
+--
+
+INSERT INTO `rak` (`id_rak`, `nama_rak`, `lokasi`) VALUES
+(1, 'Motivasi', 'Lantai 1'),
+(2, 'Novel', 'Lantai 1'),
+(3, 'Self Improvement', 'Lantai 1'),
+(4, 'Bisnis', 'Lantai 2'),
+(5, 'Sejarah', 'Lantai 2'),
+(6, 'Teknologi', 'Lantai 2'),
+(7, 'Biografi', 'Lantai 1'),
+(8, 'Komik', 'Lantai 1'),
+(9, 'Referensi', 'Lantai 2'),
+(10, 'Motivasi', 'Lantai 1');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `riwayat_peminjaman`
+--
+
+CREATE TABLE `riwayat_peminjaman` (
+  `id_riwayat` int(11) NOT NULL,
+  `id_peminjaman` int(11) DEFAULT NULL,
+  `judul_buku` varchar(255) DEFAULT NULL,
+  `nama_peminjam` varchar(100) DEFAULT NULL,
+  `tanggal_pinjam` date DEFAULT NULL,
+  `tanggal_kembali_seharusnya` date DEFAULT NULL,
+  `tanggal_kembali_asli` date DEFAULT NULL,
+  `denda` int(11) DEFAULT 0,
+  `status_akhir` varchar(50) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ulasan`
+--
+
+CREATE TABLE `ulasan` (
+  `id_ulasan` int(11) NOT NULL,
+  `id_user` int(11) DEFAULT NULL,
+  `id_buku` int(11) DEFAULT NULL,
+  `id_peminjaman` int(11) DEFAULT NULL,
+  `rating` int(11) DEFAULT NULL CHECK (`rating` >= 1 and `rating` <= 5),
+  `komentar` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `ulasan`
+--
+
+INSERT INTO `ulasan` (`id_ulasan`, `id_user`, `id_buku`, `id_peminjaman`, `rating`, `komentar`, `created_at`) VALUES
+(1, 6, 7, NULL, 5, '', '2026-04-22 16:54:37'),
+(2, 6, 7, NULL, 5, '', '2026-04-22 16:54:37'),
+(3, 6, 6, NULL, 5, 'Seruu bangett!!!!\r\n', '2026-04-22 17:15:52'),
+(4, 6, 2, NULL, 5, '', '2026-04-22 17:20:50'),
+(5, 6, 2, NULL, 5, '', '2026-04-22 17:22:22'),
+(6, 6, 2, NULL, 5, '', '2026-04-22 17:23:31'),
+(7, 6, 2, NULL, 1, '', '2026-04-22 17:24:24'),
+(8, 6, 10, NULL, 5, 'alhamdulillah', '2026-04-23 07:20:38'),
+(9, 6, 10, NULL, 5, '', '2026-04-23 17:18:22'),
+(10, 6, 10, NULL, 5, 'efashsdej', '2026-04-23 17:18:33'),
+(11, 6, 20, NULL, 5, '', '2026-04-24 14:59:20'),
+(12, 6, 10, NULL, 4, 'Mantappu alhamdulillah minn!!', '2026-04-24 15:10:08'),
+(13, 6, 7, NULL, 5, 'fdjdfmxf', '2026-04-24 22:18:39'),
+(14, 6, 6, NULL, 5, 'hasjhdtjt', '2026-04-24 22:18:52'),
+(15, 6, 6, NULL, 5, 'stkjrykmfhsm', '2026-04-24 22:18:59'),
+(16, 6, 8, NULL, 5, 'dkhgfhmfgsxm', '2026-04-24 22:19:08'),
+(17, 6, 2, 12, 5, 'rhgarehj', '2026-04-24 22:26:38'),
+(18, 6, 20, 28, 5, 'fgmdfh,h', '2026-04-24 22:36:56'),
+(19, 6, 6, 18, 5, 'fhjszajhdtajkdt', '2026-04-24 22:37:20'),
+(20, 6, 10, 24, 5, 'nhswtnjwtrj', '2026-04-24 23:03:38'),
+(21, 8, 18, 31, 5, '1234', '2026-04-25 00:08:37'),
+(22, 6, 21, 27, 5, 'Maff ya telatt nagsihhnya\r\n', '2026-04-25 02:10:43'),
+(23, 6, 18, 26, 5, 'sfhsdgxmjfsghm', '2026-04-26 00:35:26');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `nama` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `role` enum('admin','petugas','anggota') DEFAULT 'anggota',
+  `foto` varchar(255) DEFAULT NULL,
+  `status` enum('aktif','nonaktif') DEFAULT 'aktif',
+  `telepon` varchar(20) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `nama`, `email`, `username`, `password`, `role`, `foto`, `status`, `telepon`, `created_at`) VALUES
+(1, 'Obeyy', 'muhamadrobirahmawan70@gmail.com', 'Beyy', '$2y$10$mN0VlSGGtLX7EHzKM0Cyc.IachwUzGbDPLIIt5dCIve1U7WPEoOCC', 'admin', '1775880153_09cd2933c38eb181b94f.webp', 'aktif', NULL, '2026-04-11 02:17:32'),
+(2, 'Ahmad Syahid', 'muhamadrobirahmawan70@gmail.com', 'Ahmad', '$2y$10$.zblxY02g/c5w7QwEvIKW.gv/4DnLXNO9LKOQ8W23/AzhdFgMpKkS', 'anggota', '1775880599_4ff5ed0b7d23c330fc7b.webp', 'aktif', NULL, '2026-04-11 04:09:59'),
+(6, 'Obett', 'muhamadrobirahmawan70@gmail.com', 'bett', '$2y$10$6K289mLJdred6.MfriK72ORNWIJlPjuWV.qdGCBZoqS3J3xZwj/H2', 'anggota', '1776526492_ee9b995ae82a7e63267e.webp', 'aktif', NULL, '2026-04-18 15:34:52'),
+(7, 'Bayu Suaidi', 'muhamadrobirahmawan70@gmail.com', 'Bayu', '$2y$10$0ue5PvsSoFPoZm5CU37jlOWcP1.ybWvDoM7JxXYlg5a6H27XSpSMu', 'anggota', '1776541579_e437268d566226a6f3f3.webp', 'aktif', NULL, '2026-04-18 19:46:19'),
+(8, 'adit', 'muhamadrobirahmawan70@gmail.com', 'aditganteng', '$2y$10$q4x9Uz7aaO6S6SEpIuCNjeNhNF1twulk0ZDdXZrGcslKtq5RH0O2K', 'anggota', '1777050386_8918a3849645e6e29a8e.webp', 'aktif', NULL, '2026-04-24 17:06:26');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `buku`
+--
+ALTER TABLE `buku`
+  ADD PRIMARY KEY (`id_buku`),
+  ADD KEY `buku_ibfk_1` (`id_kategori`),
+  ADD KEY `buku_ibfk_2` (`id_penulis`),
+  ADD KEY `buku_ibfk_3` (`id_penerbit`);
+
+--
+-- Indexes for table `buku_rak`
+--
+ALTER TABLE `buku_rak`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `buku_rak_ibfk_1` (`id_buku`),
+  ADD KEY `buku_rak_ibfk_2` (`id_rak`);
+
+--
+-- Indexes for table `log_aktivitas`
+--
+ALTER TABLE `log_aktivitas`
+  ADD PRIMARY KEY (`id_log`),
+  ADD KEY `id_user` (`id_user`);
+
+--
+-- Indexes for table `peminjaman`
+--
+ALTER TABLE `peminjaman`
+  ADD PRIMARY KEY (`id_peminjaman`),
+  ADD KEY `id_buku` (`id_buku`),
+  ADD KEY `id_user` (`id_user`);
+
+--
+-- Indexes for table `rak`
+--
+ALTER TABLE `rak`
+  ADD PRIMARY KEY (`id_rak`);
+
+--
+-- Indexes for table `riwayat_peminjaman`
+--
+ALTER TABLE `riwayat_peminjaman`
+  ADD PRIMARY KEY (`id_riwayat`),
+  ADD KEY `riwayat_peminjaman_ibfk_1` (`id_peminjaman`);
+
+--
+-- Indexes for table `ulasan`
+--
+ALTER TABLE `ulasan`
+  ADD PRIMARY KEY (`id_ulasan`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `buku`
+--
+ALTER TABLE `buku`
+  MODIFY `id_buku` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT for table `buku_rak`
+--
+ALTER TABLE `buku_rak`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT for table `log_aktivitas`
+--
+ALTER TABLE `log_aktivitas`
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT for table `peminjaman`
+--
+ALTER TABLE `peminjaman`
+  MODIFY `id_peminjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
+--
+-- AUTO_INCREMENT for table `rak`
+--
+ALTER TABLE `rak`
+  MODIFY `id_rak` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `riwayat_peminjaman`
+--
+ALTER TABLE `riwayat_peminjaman`
+  MODIFY `id_riwayat` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ulasan`
+--
+ALTER TABLE `ulasan`
+  MODIFY `id_ulasan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `log_aktivitas`
+--
+ALTER TABLE `log_aktivitas`
+  ADD CONSTRAINT `log_aktivitas_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `peminjaman`
+--
+ALTER TABLE `peminjaman`
+  ADD CONSTRAINT `peminjaman_ibfk_1` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id_buku`),
+  ADD CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `riwayat_peminjaman`
+--
+ALTER TABLE `riwayat_peminjaman`
+  ADD CONSTRAINT `riwayat_peminjaman_ibfk_1` FOREIGN KEY (`id_peminjaman`) REFERENCES `peminjaman` (`id_peminjaman`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
