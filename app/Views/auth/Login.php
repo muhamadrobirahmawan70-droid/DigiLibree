@@ -141,8 +141,8 @@
                         <i class="bi bi-plus-circle-fill me-1"></i> Buat Akun Baru
                     </a>
                     <a href="<?= base_url('restore') ?>" class="btn btn-outline-danger btn-sm">
-<i class="bi bi-database"></i> Restore DB
-</a>
+                    <i class="bi bi-database"></i> Restore DB
+                    </a>
                 </div>
 
             </div>

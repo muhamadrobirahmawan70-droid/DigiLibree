@@ -8,7 +8,7 @@
             <h2 class="fw-800 text-dark mb-1" style="letter-spacing: -1px;">
                 <i class="bi bi-people-fill text-primary me-2"></i>Database Pengguna
             </h2>
-            <p class="text-muted mb-0 small">Kelola kendali akses anggota, petugas, dan administrator.</p>
+            <p class="text-muted mb-0 small">Kelola kendali akses anggota, dan administrator.</p>
         </div>
         <div class="col-md-5 text-md-end mt-3 mt-md-0">
             <a href="<?= base_url('users/create') ?>" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
@@ -35,7 +35,6 @@
                         <select name="role" class="form-select bg-light border-0 rounded-pill py-2 fw-semibold text-muted">
                             <option value="">Semua Hak Akses</option>
                             <option value="admin" <?= (($_GET['role'] ?? '') == 'admin') ? 'selected' : '' ?>>Administrator</option>
-                            <option value="petugas" <?= (($_GET['role'] ?? '') == 'petugas') ? 'selected' : '' ?>>Petugas</option>
                             <option value="anggota" <?= (($_GET['role'] ?? '') == 'anggota') ? 'selected' : '' ?>>Anggota</option>
                         </select>
                     </div>
