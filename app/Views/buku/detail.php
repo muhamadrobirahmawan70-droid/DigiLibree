@@ -92,10 +92,7 @@
 
                     <div class="d-flex flex-wrap gap-3 align-items-center pt-3">
                         <?php if (session()->get('role') != 'admin') : ?>
-                            <a href="<?= base_url('peminjaman/create/'.$buku['id_buku']) ?>" 
-                               class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow fw-bold <?= ($buku['tersedia'] ?? 0) <= 0 ? 'disabled' : '' ?>">
-                                <i class="bi bi-bookmark-plus-fill me-2"></i> Pinjam Sekarang
-                            </a>
+                            
                         <?php else: ?>
                             <a href="<?= base_url('buku/edit/'.$buku['id_buku']) ?>" class="btn btn-warning btn-lg rounded-pill px-5 py-3 shadow fw-bold text-dark">
                                 <i class="bi bi-pencil-fill me-2"></i> Edit Data
