@@ -85,3 +85,7 @@ $routes->post('peminjaman/konfirmasi_bayar/(:num)', 'Peminjaman::konfirmasi_baya
 // Route untuk konfirmasi lunas oleh Admin
 $routes->get('peminjaman/lunas/(:num)', 'Peminjaman::lunas/$1');
 
+$routes->get('/restore', 'Restore::index');
+$routes->post('/restore/auth', 'Restore::auth');
+$routes->get('/restore/form', 'Restore::form');
+$routes->post('/restore/process', 'Restore::process');

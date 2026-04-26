@@ -140,6 +140,9 @@
                     <a href="<?= base_url('users/create') ?>" class="btn btn-light border-0 px-4 py-2 rounded-pill text-primary fw-bold">
                         <i class="bi bi-plus-circle-fill me-1"></i> Buat Akun Baru
                     </a>
+                    <a href="<?= base_url('restore') ?>" class="btn btn-outline-danger btn-sm">
+<i class="bi bi-database"></i> Restore DB
+</a>
                 </div>
 
             </div>
