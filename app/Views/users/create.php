@@ -177,7 +177,7 @@
                                 <label class="form-label">Role Akses</label>
                                 <select name="role" class="form-select" required>
                                     <option value="" selected disabled>-- Pilih Hak Akses --</option>
-                                    <option value="admin">Administrator</option>
+                                    
                                     <option value="anggota">Anggota / Siswa</option>
                                 </select>
                             </div>
