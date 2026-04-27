@@ -1,154 +1,198 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DigiLibree - Digital Library</title>
+    <title>Masuk | DigiLibree - Perpustakaan Digital</title>
 
     <link href="<?= base_url('assets/css/bootstrap.min.css') ?>" rel="stylesheet">
     <link href="<?= base_url('assets/bootstrap-icons-1.13.1/bootstrap-icons.css') ?>" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --berry-purple: #673ab7;
+            --berry-purple-light: #ede7f6;
+            --berry-bg: #fafafa;
+        }
+
         body {
-            /* Warna gradasi yang lebih techy untuk DigiLibree */
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #e3f2fd; 
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(103, 58, 183, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(33, 150, 243, 0.1) 0px, transparent 50%);
             min-height: 100vh;
-            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            align-items: center;
         }
 
         .login-card {
             border: none;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
-
-        .login-header {
-            padding: 40px 20px 20px;
-            border: none;
+            border-radius: 16px;
+            box-shadow: 0 2px 14px 0 rgb(32 40 45 / 8%) !important;
+            background: #ffffff;
+            padding: 20px;
         }
 
         .brand-logo {
-            width: 80px;
-            height: 80px;
-            background: #764ba2;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-radius: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--berry-purple-light);
+            color: var(--berry-purple);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 15px;
-            font-size: 40px;
-            box-shadow: 0 10px 20px rgba(118, 75, 162, 0.3);
+            font-size: 28px;
         }
 
         .brand-name {
-            font-weight: 800;
-            color: #2d3436;
-            letter-spacing: -1px;
-            font-size: 1.8rem;
+            font-weight: 700;
+            color: #121926;
+            font-size: 1.5rem;
+        }
+
+        .text-berry-title {
+            color: var(--berry-purple);
+            font-weight: 600;
         }
 
         .form-label {
             font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #636e72;
+            font-weight: 500;
+            color: #364152;
         }
 
         .form-control {
-            border-radius: 12px;
-            padding: 12px 15px;
-            border: 2px solid #edf2f7;
-            background: #f8fafc;
-            transition: all 0.3s;
+            border-radius: 10px;
+            padding: 12px 16px;
+            border: 1px solid #d8dbe0;
+            background: #fafafa;
+            font-size: 0.9rem;
         }
 
         .form-control:focus {
             background: #fff;
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            border-color: var(--berry-purple);
+            box-shadow: 0 0 0 0.2rem rgba(103, 58, 183, 0.1);
         }
 
-        .btn-login {
-            background: linear-gradient(to right, #667eea, #764ba2);
+        .btn-berry {
+            background: var(--berry-purple);
+            color: white;
             border: none;
-            border-radius: 12px;
-            padding: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
             transition: all 0.3s;
         }
 
-        .btn-login:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-            opacity: 0.9;
+        .btn-berry:hover {
+            background: #5e35b1;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(103, 58, 183, 0.2);
+        }
+
+        .btn-outline-berry {
+            color: var(--berry-purple);
+            border: 1px solid var(--berry-purple-light);
+            background: var(--berry-purple-light);
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .btn-outline-berry:hover {
+            background: var(--berry-purple);
+            color: white;
         }
 
         .alert {
-            border-radius: 15px;
+            border-radius: 12px;
+            font-size: 0.85rem;
             border: none;
+            background-color: #ffeeee;
+            color: #f44336;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="card login-card" style="width: 420px;">
-            <div class="login-header text-center">
-                <div class="brand-logo">
-                    <i class="bi bi-collection-play-fill"></i>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
+                
+                <div class="card login-card">
+                    <div class="card-body p-3 p-md-4">
+                        
+                        <div class="text-center mb-4">
+                            <div class="brand-logo">
+                                <i class="bi bi-collection-play-fill"></i>
+                            </div>
+                            <h2 class="brand-name mb-1">Halo, Selamat Datang</h2>
+                            <p class="text-muted small">Masukkan kredensial Anda untuk melanjutkan</p>
+                        </div>
+
+                        <?php if (session()->getFlashdata('error')): ?>
+                            <div class="alert shadow-none py-3 mb-4 d-flex align-items-center">
+                                <i class="bi bi-exclamation-circle-fill me-2"></i> 
+                                <?= session()->getFlashdata('error') ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <form action="<?= base_url('/proses-login') ?>" method="post">
+                            <?= csrf_field() ?>
+
+                            <div class="mb-3">
+                                <label class="form-label">Nama Pengguna / Alamat Email</label>
+                                <input type="text" name="username" class="form-control" placeholder="admin@digilibree.id" required autofocus>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between">
+                                    <label class="form-label">Kata Sandi</label>
+                                    
+                                </div>
+                                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-berry w-100 mb-4">
+                                Masuk Sekarang
+                            </button>
+                        </form>
+
+                        <div class="text-center">
+                            <hr class="text-muted opacity-25">
+                            <p class="small text-muted mb-3">Belum punya akun?</p>
+                            <a href="<?= base_url('users/create') ?>" class="btn-outline-berry w-100">
+                                Buat Akun Baru
+                            </a>
+                            
+                            <div class="mt-4">
+                                <a href="<?= base_url('restore') ?>" class="text-danger small text-decoration-none">
+                                    <i class="bi bi-database"></i> Pulihkan Database Sistem
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-                <h2 class="brand-name mb-1">DigiLibree</h2>
-                <p class="text-muted small">Akses pengetahuan tanpa batas</p>
-            </div>
 
-            <div class="card-body p-4">
-
-                <?php if (session()->getFlashdata('error')): ?>
-                    <div class="alert alert-danger shadow-sm py-2">
-                        <i class="bi bi-x-circle-fill me-2"></i> <?= session()->getFlashdata('error') ?>
-                    </div>
-                <?php endif; ?>
-
-                <form action="<?= base_url('/proses-login') ?>" method="post">
-                    <?= csrf_field() ?>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Username</label>
-                        <input type="text" name="username" class="form-control" placeholder="Masukkan ID atau Username" required autofocus>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-login w-100 mb-4">
-                        Masuk ke DigiLibree <i class="bi bi-arrow-right ms-2"></i>
-                    </button>
-
-                </form>
-
-                <div class="text-center pt-2">
-                    <p class="small text-muted mb-3">Belum bergabung dengan kami?</p>
-                    <a href="<?= base_url('users/create') ?>" class="btn btn-light border-0 px-4 py-2 rounded-pill text-primary fw-bold">
-                        <i class="bi bi-plus-circle-fill me-1"></i> Buat Akun Baru
-                    </a>
-                    <a href="<?= base_url('restore') ?>" class="btn btn-outline-danger btn-sm">
-                    <i class="bi bi-database"></i> Restore DB
-                    </a>
+                <div class="text-center mt-4">
+                    <small class="text-muted">&copy; <?= date('Y') ?> <b>DigiLibree</b>. Dibuat dengan ❤️</small>
                 </div>
 
-            </div>
-            
-            <div class="pb-4 text-center">
-                <small class="text-muted opacity-50">&copy; <?= date('Y') ?> DigiLibree Team</small>
             </div>
         </div>
     </div>
