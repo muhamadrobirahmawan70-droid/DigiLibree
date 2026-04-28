@@ -99,16 +99,23 @@
                     </div>
 
                     <div class="d-flex flex-wrap gap-3">
-                        <?php if (session()->get('role') == 'admin') : ?>
-                            <a href="<?= base_url('buku/edit/'.$buku['id_buku']) ?>" class="btn btn-purple-berry rounded-pill px-5 py-3 shadow-sm fw-bold">
-                                <i class="bi bi-pencil-square me-2"></i> Edit Data
-                            </a>
-                        <?php endif; ?>
+    
+    <?php if (!empty($buku['file_pdf'])) : ?>
+        <a href="<?= base_url('uploads/buku/pdf/' . $buku['file_pdf']) ?>" target="_blank" class="btn btn-success rounded-pill px-5 py-3 shadow-sm fw-bold">
+            <i class="bi bi-book-half me-2"></i> Baca E-Book
+        </a>
+    <?php endif; ?>
 
-                        <a href="<?= base_url('buku') ?>" class="btn btn-outline-secondary rounded-pill px-4 py-3 fw-bold border-2">
-                            <i class="bi bi-arrow-left me-2"></i> Kembali ke Katalog
-                        </a>
-                    </div>
+    <?php if (session()->get('role') == 'admin') : ?>
+        <a href="<?= base_url('buku/edit/'.$buku['id_buku']) ?>" class="btn btn-purple-berry rounded-pill px-5 py-3 shadow-sm fw-bold">
+            <i class="bi bi-pencil-square me-2"></i> Edit Data
+        </a>
+    <?php endif; ?>
+
+    <a href="<?= base_url('buku') ?>" class="btn btn-outline-secondary rounded-pill px-4 py-3 fw-bold border-2">
+        <i class="bi bi-arrow-left me-2"></i> Kembali ke Katalog
+    </a>
+</div>
                 </div>
             </div>
         </div>

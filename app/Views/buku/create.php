@@ -151,8 +151,14 @@
                                         <label class="form-label fw-bold text-dark small text-uppercase ls-1 ms-1">Sinopsis Koleksi</label>
                                         <textarea name="deskripsi" class="form-control-custom-area w-100" rows="5" placeholder="Tuliskan ringkasan cerita buku secara menarik..."></textarea>
                                     </div>
+                                    <label class="form-label fw-bold text-dark small text-uppercase ls-1 ms-1">Dokumen E-Book (PDF)</label>
+                                    <div class="input-group-custom">
+                                    <i class="bi bi-file-earmark-pdf icon-left text-danger"></i>
+                                    <input type="file" name="file_pdf" class="form-control-custom" accept=".pdf">
+                                    </div>
+    
+                                    </div>
                                 </div>
-
                                 <div class="mt-5 d-flex flex-column flex-sm-row gap-3 pt-4 border-top">
                                     <button type="submit" class="btn btn-berry-gradient rounded-pill px-5 py-3 fw-bold shadow transition-hover flex-grow-1">
                                         <i class="bi bi-cloud-plus-fill me-2"></i> Tambah ke Katalog

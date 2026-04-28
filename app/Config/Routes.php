@@ -89,3 +89,7 @@ $routes->get('/restore', 'Restore::index');
 $routes->post('/restore/auth', 'Restore::auth');
 $routes->get('/restore/form', 'Restore::form');
 $routes->post('/restore/process', 'Restore::process');
+
+$routes->post('peminjaman/tambah_denda/(:num)', 'Peminjaman::tambahDenda/$1');
+$routes->post('peminjaman/set_denda_manual/(:num)', 'Peminjaman::set_denda_manual/$1');
+$routes->post('peminjaman/bayar_denda/(:num)', 'Peminjaman::bayar_denda/$1');

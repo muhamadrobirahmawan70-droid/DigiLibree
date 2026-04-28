@@ -191,30 +191,53 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Gunakan pengecekan yang lebih aman
     const dataGrafik = <?= json_encode($grafik ?? []); ?>;
-    if (dataGrafik.length > 0) {
-        const ctx = document.getElementById('chartPopuler').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: dataGrafik.map(item => item.judul),
-                datasets: [{
-                    label: 'Total Pinjam',
-                    data: dataGrafik.map(item => item.total),
-                    backgroundColor: '#673ab7', // Berry Purple
-                    borderRadius: 8,
-                    barThickness: 25
-                }]
-            },
-            options: { 
-                maintainAspectRatio: false, 
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { drawBorder: false, color: '#f0f0f0' } },
-                    x: { grid: { display: false } }
+    
+    // Log di console buat mastiin datanya nyampe atau nggak (Tekan F12 di browser)
+    console.log("Data Grafik:", dataGrafik);
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const canvasPopuler = document.getElementById('chartPopuler');
+        
+        if (canvasPopuler && dataGrafik.length > 0) {
+            const ctx = canvasPopuler.getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dataGrafik.map(item => item.judul),
+                    datasets: [{
+                        label: 'Total Pinjam',
+                        data: dataGrafik.map(item => item.total),
+                        backgroundColor: '#673ab7',
+                        borderRadius: 8,
+                        barThickness: 25
+                    }]
+                },
+                options: { 
+                    maintainAspectRatio: false, 
+                    responsive: true,
+                    plugins: { 
+                        legend: { display: false } 
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            ticks: { stepSize: 1 },
+                            grid: { color: '#f0f0f0' } 
+                        },
+                        x: { grid: { display: false } }
+                    }
                 }
-            }
-        });
-    }
+            });
+        } else {
+            // Jika data kosong, tampilkan pesan di dalam canvas
+            const ctx = canvasPopuler.getContext('2d');
+            ctx.font = "14px Plus Jakarta Sans";
+            ctx.fillStyle = "#888";
+            ctx.textAlign = "center";
+            ctx.fillText("Belum ada statistik peminjaman.", canvasPopuler.width/2, canvasPopuler.height/2);
+        }
+    });
 </script>
 <?= $this->endSection() ?>

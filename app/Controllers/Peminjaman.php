@@ -36,39 +36,59 @@ class Peminjaman extends BaseController
 
     // --- Tampilan Utama ---
     public function index()
-    {
-        $id_user = session()->get('id');
-        $role = session()->get('role');
-        $keyword = $this->request->getVar('keyword');
+{
+    $id_user = session()->get('id');
+    $role = session()->get('role');
+    $keyword = $this->request->getVar('keyword');
 
-        $builder = $this->db->table('peminjaman');
-        $builder->select('peminjaman.*, buku.judul, buku.id_penulis, users.username, ulasan.id_ulasan');
-        $builder->join('buku', 'buku.id_buku = peminjaman.id_buku');
-        $builder->join('users', 'users.id = peminjaman.id_user');
-        $builder->join('ulasan', 'ulasan.id_peminjaman = peminjaman.id_peminjaman', 'left'); 
+    $builder = $this->db->table('peminjaman');
+    $builder->select('peminjaman.*, buku.judul, users.username, users.telepon, ulasan.id_ulasan'); // Tambah users.no_hp buat WA
+    $builder->join('buku', 'buku.id_buku = peminjaman.id_buku');
+    $builder->join('users', 'users.id = peminjaman.id_user');
+    $builder->join('ulasan', 'ulasan.id_peminjaman = peminjaman.id_peminjaman', 'left');
 
-        // Filter Role: Jika bukan admin, hanya lihat milik sendiri
-        if ($role != 'admin') {
-            $builder->where('peminjaman.id_user', $id_user);
-        }
-
-        // Fitur Pencarian
-        if ($keyword) {
-            $builder->groupStart()
-                    ->like('buku.judul', $keyword)
-                    ->orLike('users.username', $keyword)
-                    ->groupEnd();
-        }
-
-        $builder->orderBy('peminjaman.id_peminjaman', 'DESC');
-
-        $data = [
-            'peminjaman' => $builder->get()->getResultArray(),
-            'keyword'    => $keyword
-        ];
-
-        return view('peminjaman/index', $data);
+    if ($role != 'admin') {
+        $builder->where('peminjaman.id_user', $id_user);
     }
+
+    if ($keyword) {
+        $builder->groupStart()
+                ->like('buku.judul', $keyword)
+                ->orLike('users.username', $keyword)
+                ->groupEnd();
+    }
+
+    $peminjaman = $builder->orderBy('peminjaman.id_peminjaman', 'DESC')->get()->getResultArray();
+
+    // --- LOGIKA DENDA OTOMATIS (REAL-TIME) ---
+    foreach ($peminjaman as &$p) {
+        // Jika masih dipinjam, hitung denda telat sementara
+        if ($p['status'] == 'dipinjam' || $p['status'] == 'disetujui') {
+            $tgl_kembali = new \DateTime($p['tanggal_kembali']);
+            $tgl_sekarang = new \DateTime(date('Y-m-d'));
+
+            if ($tgl_sekarang > $tgl_kembali) {
+                $selisih = $tgl_sekarang->diff($tgl_kembali)->days;
+                $denda_telat = $selisih * 2000; // Contoh: 2rb/hari
+                
+                // Update ke database agar User & Admin lihat nominal yang sama
+                $this->pinjamModel->update($p['id_peminjaman'], [
+                    'denda' => $denda_telat,
+                    'status_denda' => ($p['status_denda'] == 'lunas') ? 'lunas' : 'belum_bayar'
+                ]);
+                
+                $p['denda'] = $denda_telat; // Update tampilan array
+            }
+        }
+    }
+
+    $data = [
+        'peminjaman' => $peminjaman,
+        'keyword'    => $keyword
+    ];
+
+    return view('peminjaman/index', $data);
+}
 
     public function pinjamKilat($id_buku)
     {
@@ -166,21 +186,6 @@ class Peminjaman extends BaseController
         return redirect()->back()->with('success', 'Ditolak!');
     }
 
-    public function konfirmasi_bayar($id)
-    {
-        $fileBukti = $this->request->getFile('bukti_bayar');
-        if ($fileBukti->isValid() && !$fileBukti->hasMoved()) {
-            $namaBaru = $fileBukti->getRandomName();
-            $fileBukti->move('uploads/bukti_bayar/', $namaBaru);
-            $this->db->table('peminjaman')->where('id_peminjaman', $id)->update([
-                'bukti_bayar'   => $namaBaru,
-                'status_denda'  => 'proses'
-            ]);
-            return redirect()->back()->with('success', 'Bukti terkirim!');
-        }
-        return redirect()->back()->with('error', 'Gagal upload.');
-    }
-
     public function lunas($id)
     {
         $this->db->table('peminjaman')->where('id_peminjaman', $id)->update(['status_denda' => 'lunas']);
@@ -206,21 +211,83 @@ class Peminjaman extends BaseController
         return redirect()->back()->with('success', 'Terima kasih atas ulasannya!');
     }
     public function riwayat()
-    {
-        $userId = session()->get('id');
+{
+    $userId = session()->get('id');
+    
+    $data = [
+        'title'   => "Riwayat Membaca Saya",
+        'riwayat' => $this->pinjamModel->select('peminjaman.*, buku.judul, buku.cover, buku.file_pdf') // <-- TAMBAHKAN buku.file_pdf DI SINI
+                        ->join('buku', 'buku.id_buku = peminjaman.id_buku')
+                        ->where('peminjaman.id_user', $userId)
+                        ->whereIn('peminjaman.status', ['kembali', 'ditolak'])
+                        ->orderBy('peminjaman.id_peminjaman', 'DESC')
+                        ->findAll()
+    ];
+    
+    return view('peminjaman/riwayat', $data);
+}
+public function tambahDenda($id) {
+    $peminjamanModel = new \App\Models\PeminjamanModel();
+    
+    // Admin input nominal (misal 50.000 karena buku robek)
+    $nominal = $this->request->getPost('nominal_denda');
+    $alasan  = $this->request->getPost('catatan');
+
+    $peminjamanModel->update($id, [
+        'denda'   => $nominal, 
+        'catatan' => $alasan
+    ]);
+
+    return redirect()->back()->with('success', 'Denda berhasil ditetapkan.');
+}
+public function selesaikan_tanpa_denda($id)
+{
+    $this->peminjamanModel->update($id, [
+        'status_denda' => 'lunas', // Dianggap lunas karena denda 0
+        'tanggal_selesai' => date('Y-m-d H:i:s'),
+        'catatan' => 'Buku kembali dalam kondisi baik.'
+    ]);
+
+    return redirect()->back()->with('success', 'Transaksi diselesaikan!');
+}
+public function set_denda_manual($id)
+{
+    if (session()->get('role') != 'admin') return redirect()->to('/')->with('error', 'Akses ditolak!');
+
+    $pinjam = $this->pinjamModel->find($id);
+    $nominal_tambahan = $this->request->getPost('nominal_denda'); // Inputan Admin (misal denda rusak)
+    $catatan = $this->request->getPost('catatan');
+
+    // Denda total adalah denda telat yang sudah tercatat + nominal tambahan dari admin
+    $denda_total = $pinjam['denda'] + $nominal_tambahan;
+
+    $this->pinjamModel->update($id, [
+        'denda'        => $denda_total,
+        'catatan'      => $catatan,
+        'status_denda' => ($denda_total > 0) ? 'belum_bayar' : 'lunas'
+    ]);
+
+    return redirect()->back()->with('success', 'Denda fisik berhasil ditambahkan!');
+}
+public function bayar_denda($id)
+{
+    $file = $this->request->getFile('bukti_bayar');
+
+    if ($file && $file->isValid() && !$file->hasMoved()) {
+        $namaFile = $file->getRandomName();
         
-        // Ambil data peminjaman yang statusnya sudah 'kembali' atau 'ditolak'
-        // agar halaman index fokus ke yang aktif, dan riwayat fokus ke yang sudah lewat.
-        $data = [
-            'title'   => "Riwayat Membaca Saya",
-            'riwayat' => $this->pinjamModel->select('peminjaman.*, buku.judul, buku.cover')
-                            ->join('buku', 'buku.id_buku = peminjaman.id_buku')
-                            ->where('peminjaman.id_user', $userId)
-                            ->whereIn('peminjaman.status', ['kembali', 'ditolak'])
-                            ->orderBy('peminjaman.id_peminjaman', 'DESC')
-                            ->findAll()
-        ];
-        
-        return view('peminjaman/riwayat', $data);
+        // FCPATH itu mengarah ke folder 'public'
+        // Jadi file akan masuk ke: public/bukti_bayar/
+        $file->move(FCPATH . 'bukti_bayar', $namaFile); 
+
+        $this->pinjamModel->update($id, [
+            'bukti_bayar'  => $namaFile,
+            'status_denda' => 'proses'
+        ]);
+
+        return redirect()->back()->with('success', 'Bukti terkirim!');
     }
+    
+    return redirect()->back()->with('error', 'Gagal upload.');
+}
 }

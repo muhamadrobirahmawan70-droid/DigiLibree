@@ -12,7 +12,7 @@ class PeminjamanModel extends Model
     // Pastikan field ini sesuai dengan kolom di database Anda
    protected $allowedFields = [
     'id_user', 'id_buku', 'tanggal_pinjam', 'tanggal_kembali', 
-    'tanggal_pengembalian_asli', 'status', 'denda', 'status_denda' // <-- Tambahkan ini
+    'tanggal_pengembalian_asli', 'status', 'denda', 'status_denda','catatan','tanggal_selesai' // <-- Tambahkan ini
 ];
 
     /**

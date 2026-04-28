@@ -153,6 +153,14 @@
                                         <label class="form-label fw-bold text-dark small text-uppercase ls-1 ms-1">Sinopsis Singkat</label>
                                         <textarea name="deskripsi" class="form-control-custom-area w-100" rows="5" placeholder="Update sinopsis..."><?= $buku['deskripsi'] ?></textarea>
                                     </div>
+                                    <div class="col-md-12">
+    <label class="form-label fw-bold text-dark small text-uppercase ls-1 ms-1">Dokumen E-Book (PDF)</label>
+    <div class="input-group-custom">
+        <i class="bi bi-file-earmark-pdf icon-left text-danger"></i>
+        <input type="file" name="file_pdf" class="form-control-custom" accept=".pdf">
+    </div>
+    
+</div>
                                 </div>
 
                                 <div class="mt-5 d-flex flex-column flex-sm-row gap-3 pt-4 border-top">
@@ -254,6 +262,8 @@
     
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .animate-fade-in { animation: fadeIn 0.6s ease-out; }
+    .bg-success-soft { background-color: #e8f5e9; color: #2e7d32; }
+.text-success { color: #2e7d32 !important; }
 </style>
 
 <script>

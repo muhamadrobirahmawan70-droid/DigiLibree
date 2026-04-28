@@ -161,43 +161,65 @@ class Buku extends BaseController
     }
 
     public function update($id)
-    {
-        $bukuLama = $this->buku->find($id);
-        $fileCover = $this->request->getFile('cover');
-        $namaCover = $bukuLama['cover'];
+{
+    $bukuLama = $this->buku->find($id);
+    
+    // --- PROSES UPLOAD COVER ---
+    $fileCover = $this->request->getFile('cover');
+    $namaCover = $bukuLama['cover'];
 
-        if ($fileCover && $fileCover->isValid() && !$fileCover->hasMoved()) {
-            $namaCover = $fileCover->getRandomName();
-            $fileCover->move('uploads/buku/cover', $namaCover);
-            
-            if ($bukuLama['cover'] != 'default.jpg' && !empty($bukuLama['cover'])) {
-                $pathLama = FCPATH . 'uploads/buku/cover/' . $bukuLama['cover'];
-                if (file_exists($pathLama)) {
-                    unlink($pathLama);
-                }
+    if ($fileCover && $fileCover->isValid() && !$fileCover->hasMoved()) {
+        $namaCover = $fileCover->getRandomName();
+        $fileCover->move('uploads/buku/cover', $namaCover);
+        
+        if ($bukuLama['cover'] != 'default.jpg' && !empty($bukuLama['cover'])) {
+            $pathLama = FCPATH . 'uploads/buku/cover/' . $bukuLama['cover'];
+            if (file_exists($pathLama)) {
+                unlink($pathLama);
             }
         }
-
-        $this->buku->update($id, [
-            'judul'       => $this->request->getPost('judul'),
-            'id_kategori' => $this->request->getPost('id_kategori'),
-            'id_penulis'  => $this->request->getPost('id_penulis'),
-            'id_penerbit' => $this->request->getPost('id_penerbit'),
-            'tahun_terbit'=> $this->request->getPost('tahun_terbit'),
-            'tersedia'    => $this->request->getPost('tersedia') ?? 0,
-            'deskripsi'   => $this->request->getPost('deskripsi'),
-            'cover'       => $namaCover,
-        ]);
-
-        $cekRak = $this->db->table('buku_rak')->where('id_buku', $id)->get()->getRowArray();
-        if ($cekRak) {
-            $this->db->table('buku_rak')->where('id_buku', $id)->update(['id_rak' => $this->request->getPost('id_rak')]);
-        } else {
-            $this->db->table('buku_rak')->insert(['id_buku' => $id, 'id_rak' => $this->request->getPost('id_rak')]);
-        }
-
-        return redirect()->to('/buku')->with('success', 'Data buku berhasil diperbarui.');
     }
+
+    // --- PROSES UPLOAD PDF (TAMBAHAN BARU) ---
+    $filePdf = $this->request->getFile('file_pdf');
+    $namaPdf = $bukuLama['file_pdf'] ?? null; // Ambil nama file lama jika ada
+
+    if ($filePdf && $filePdf->isValid() && !$filePdf->hasMoved()) {
+        $namaPdf = $filePdf->getRandomName();
+        $filePdf->move('uploads/buku/pdf', $namaPdf); // Pastikan folder uploads/buku/pdf ada
+        
+        // Hapus file PDF lama jika admin upload file baru
+        if (!empty($bukuLama['file_pdf'])) {
+            $pathPdfLama = FCPATH . 'uploads/buku/pdf/' . $bukuLama['file_pdf'];
+            if (file_exists($pathPdfLama)) {
+                unlink($pathPdfLama);
+            }
+        }
+    }
+
+    // --- UPDATE DATA KE TABEL BUKU ---
+    $this->buku->update($id, [
+        'judul'        => $this->request->getPost('judul'),
+        'id_kategori'  => $this->request->getPost('id_kategori'),
+        'id_penulis'   => $this->request->getPost('id_penulis'),
+        'id_penerbit'  => $this->request->getPost('id_penerbit'),
+        'tahun_terbit' => $this->request->getPost('tahun_terbit'),
+        'tersedia'     => $this->request->getPost('tersedia') ?? 0,
+        'deskripsi'    => $this->request->getPost('deskripsi'),
+        'cover'        => $namaCover,
+        'file_pdf'     => $namaPdf, // Masukkan nama file PDF ke database
+    ]);
+
+    // --- UPDATE DATA RAK ---
+    $cekRak = $this->db->table('buku_rak')->where('id_buku', $id)->get()->getRowArray();
+    if ($cekRak) {
+        $this->db->table('buku_rak')->where('id_buku', $id)->update(['id_rak' => $this->request->getPost('id_rak')]);
+    } else {
+        $this->db->table('buku_rak')->insert(['id_buku' => $id, 'id_rak' => $this->request->getPost('id_rak')]);
+    }
+
+    return redirect()->to('/buku')->with('success', 'Data buku berhasil diperbarui.');
+}
 
     public function delete($id)
     {
@@ -242,4 +264,16 @@ class Buku extends BaseController
             ->where('buku.id_buku', $id)
             ->get()->getRowArray();
     }
+    // Di Controller Buku.php
+public function digital()
+{
+    $db = \Config\Database::connect();
+    // Hanya ambil buku yang kolom file_pdf nya tidak kosong
+    $data['buku_digital'] = $db->table('buku')
+                               ->where('file_pdf !=', null)
+                               ->get()
+                               ->getResultArray();
+    $data['title'] = "Koleksi E-Book";
+    return view('buku/digital', $data);
+}
 }
