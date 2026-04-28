@@ -76,7 +76,7 @@
         <?php if (session()->get('role') == 'admin') : ?>
             <a href="<?= base_url('/backup') ?>" class="nav-link-custom text-success">
                 <i class="bi bi-database-fill-check"></i> Cadangkan Data
-            </a>
+            </a>   
         <?php endif; ?>
 
         <a href="<?= site_url('/logout') ?>" class="nav-link-custom text-danger mt-2">
