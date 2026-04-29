@@ -120,8 +120,10 @@
                                         <button type="submit" class="btn btn-purple-berry rounded-pill px-5 py-2 fw-bold shadow-sm flex-grow-1 flex-sm-grow-0">
                                             Simpan Profil
                                         </button>
-                                        <a href="<?= base_url('users') ?>" class="btn btn-light rounded-pill px-5 py-2 fw-bold text-muted border flex-grow-1 flex-sm-grow-0">
-                                            Batal
+                                      <a href="<?= (session()->get('role') == 'admin') ? base_url('users') : base_url('users/detail/' . session()->get('id')) ?>" 
+                                        class="btn btn-white rounded-circle shadow-sm me-3 d-flex align-items-center justify-content-center back-btn" 
+                                        style="width: 45px; height: 45px;">
+                                        <i class="bi bi-arrow-left text-purple-berry fs-5"></i>
                                         </a>
                                     </div>
                                 </div>

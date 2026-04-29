@@ -34,6 +34,7 @@ $routes->get('/users/delete/(:num)', 'Users::delete/$1', $allRole); // aksi hapu
 $routes->get('users/detail/(:num)', 'Users::detail/$1', $allRole); // aksi detail user
 $routes->get('users/print', 'Users::print', $allRole); // aksi print data user
 $routes->get('users/wa/(:num)', 'Users::wa/$1', $allRole); // aksi kirim ke whatsapp
+$routes->get('users/detail/', 'Users::detail'); // Sesuaikan 'profile' dengan nama fungsi di Controller
 
 $routes->get('/buku', 'Buku::index');
 $routes->get('buku/create', 'Buku::create');

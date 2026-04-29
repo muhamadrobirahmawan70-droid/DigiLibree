@@ -127,24 +127,26 @@
                                 </div>
 
                                 <div class="d-grid gap-2">
-                                    <?php if (session()->get('role') == 'admin') : ?>
-                                        <?php if ($p['status_denda'] == 'proses') : ?>
-                                            <button type="button" class="btn btn-info text-white rounded-pill btn-sm fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalValidasi<?= $p['id_peminjaman'] ?>">Validasi Bukti Bayar</button>
-                                        <?php endif; ?>
-                                        
-                                        <?php if ($p['denda'] > 0 && $p['status_denda'] != 'lunas') : ?>
-                                            <a href="https://wa.me/<?= $p['telepon'] ?? '' ?>?text=Halo%20<?= $p['username'] ?>,%20ada%20tagihan%20denda%20Rp<?= number_format($p['denda'], 0, ',', '.') ?>%20untuk%20buku%20'<?= $p['judul'] ?>'.%20Segera%20dilunasi%20ya!" target="_blank" class="btn btn-outline-success rounded-pill btn-sm fw-bold">
-                                                <i class="bi bi-whatsapp me-1"></i> Sentil User
-                                            </a>
-                                        <?php endif; ?>
+    <?php if (session()->get('role') == 'admin') : ?>
+        <?php if (!empty($p['bukti_bayar']) && $p['status_denda'] != 'lunas') : ?>
+            <button type="button" class="btn btn-info text-white rounded-pill btn-sm fw-bold shadow-sm animate-shake" data-bs-toggle="modal" data-bs-target="#modalValidasi<?= $p['id_peminjaman'] ?>">
+                <i class="bi bi-eye me-1"></i> Cek Bukti Bayar
+            </button>
+        <?php endif; ?>
+        
+        <?php if ($p['denda'] > 0 && $p['status_denda'] != 'lunas') : ?>
+            <a href="https://wa.me/<?= $p['telepon'] ?? '' ?>?text=Halo%20<?= $p['username'] ?>,%20ada%20tagihan%20denda%20Rp<?= number_format($p['denda'], 0, ',', '.') ?>%20untuk%20buku%20'<?= $p['judul'] ?>'.%20Segera%20dilunasi%20ya!" target="_blank" class="btn btn-outline-success rounded-pill btn-sm fw-bold">
+                <i class="bi bi-whatsapp me-1"></i> Sentil User
+            </a>
+        <?php endif; ?>
 
-                                    <?php elseif (session()->get('role') != 'admin' && ($p['status'] == 'dipinjam' || $p['status'] == 'disetujui')) : ?>
-                                        <form action="<?= base_url('peminjaman/kembalikan/' . $p['id_peminjaman']); ?>" method="post">
-                                            <?= csrf_field(); ?>
-                                            <button type="submit" class="btn btn-purple-berry w-100 rounded-pill fw-bold btn-sm shadow-sm" onclick="return confirm('Pastikan buku sudah dikembalikan ke petugas perpus?')">Kembalikan Buku</button>
-                                        </form>
-                                    <?php endif; ?>
-                                </div>
+    <?php elseif (session()->get('role') != 'admin' && ($p['status'] == 'dipinjam' || $p['status'] == 'disetujui')) : ?>
+        <form action="<?= base_url('peminjaman/kembalikan/' . $p['id_peminjaman']); ?>" method="post">
+            <?= csrf_field(); ?>
+            <button type="submit" class="btn btn-purple-berry w-100 rounded-pill fw-bold btn-sm shadow-sm" onclick="return confirm('Pastikan buku sudah dikembalikan ke petugas perpus?')">Kembalikan Buku</button>
+        </form>
+    <?php endif; ?>
+</div>
                             </div>
                         </div>
                     </div>
@@ -167,7 +169,7 @@
 
                                     <div class="text-center mb-4 p-3 border rounded-4 bg-white shadow-sm">
                                         <h6 class="fw-bold mb-2 small">Scan QRIS untuk Bayar:</h6>    
-                                        <img src="<?= base_url('uploads/images/qris.jpg.png') ?>" 
+                                        <img src="<?= base_url('images/qris.jpg.png') ?>" 
                                              class="img-fluid rounded-3 mb-3 shadow-sm zoom-foto" 
                                              style="max-width: 180px;" 
                                              alt="QRIS Pembayaran"

@@ -84,45 +84,64 @@ class Users extends BaseController
     }
 
     public function update($id)
-    {
-        $user = $this->users->find($id);  // Ambil data user lama
+{
+    // 1. Ambil data user lama dari database
+    $userLama = $this->users->find($id);
 
-        $fotoBaru = $this->request->getFile('foto');
-
-        // Default: gunakan foto lama
-        $namaFoto = $user['foto'];
-
-        // Jika user upload foto baru
-        if ($fotoBaru && $fotoBaru->isValid() && $fotoBaru->getName() != '') {
-
-            // Hapus foto lama jika ada
-            if (!empty($user['foto']) && file_exists(FCPATH . 'uploads/users/' . $user['foto'])) {
-                unlink(FCPATH . 'uploads/users/' . $user['foto']);
-            }
-
-            // Simpan foto baru
-            $namaFoto = $fotoBaru->getRandomName();
-            $fotoBaru->move(FCPATH . 'uploads/users', $namaFoto);
-        }
-
-        // Data yang akan diupdate
-        $data = [
-            'nama'     => $this->request->getPost('nama'),
-            'email'    => $this->request->getPost('email'),
-            'username' => $this->request->getPost('username'),
-            'role'     => $this->request->getPost('role'),
-            'foto'     => $namaFoto
-        ];
-
-        // Jika password diisi, baru update
-        if ($this->request->getPost('password') != "") {
-            $data['password'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
-        }
-
-        $this->users->update($id, $data);
-
-        return redirect()->to('/users')->with('success', 'Data user berhasil diupdate!');
+    if (!$userLama) {
+        return redirect()->back()->with('error', 'User tidak ditemukan.');
     }
+
+    // 2. Olah Foto
+    $fotoBaru = $this->request->getFile('foto');
+    $namaFoto = $userLama['foto']; // Default pakai foto lama
+
+    if ($fotoBaru && $fotoBaru->isValid() && !$fotoBaru->hasMoved()) {
+        // Hapus foto lama jika ada dan filenya beneran ada di folder
+        if (!empty($userLama['foto']) && file_exists(FCPATH . 'uploads/users/' . $userLama['foto'])) {
+            unlink(FCPATH . 'uploads/users/' . $userLama['foto']);
+        }
+
+        // Simpan foto baru
+        $namaFoto = $fotoBaru->getRandomName();
+        $fotoBaru->move(FCPATH . 'uploads/users', $namaFoto);
+    }
+
+    // 3. Susun Data yang akan diupdate
+    $data = [
+        'nama'     => $this->request->getPost('nama'),
+        'email'    => $this->request->getPost('email'),
+        'username' => $this->request->getPost('username'),
+        'foto'     => $namaFoto
+    ];
+
+    // --- PROTEKSI ROLE (TAMBAHAN) ---
+    // Jika yang login bukan admin, maka role dipaksa tetap pakai role lama
+    if (session()->get('role') != 'admin') {
+        $data['role'] = $userLama['role']; 
+    } else {
+        // Jika admin, baru boleh ambil dari input form
+        $data['role'] = $this->request->getPost('role');
+    }
+
+    // 4. Update Password jika diisi
+    if ($this->request->getPost('password') != "") {
+        $data['password'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
+    }
+
+    // 5. Eksekusi Update
+    $this->users->update($id, $data);
+
+    // --- SMART REDIRECT (TAMBAHAN) ---
+    // ... setelah $this->users->update($id, $data);
+
+if (session()->get('role') == 'admin') {
+    return redirect()->to(base_url('users'))->with('success', 'Update Berhasil');
+} else {
+    // HARUS ADA ID-nya di ujung URL:
+    return redirect()->to(base_url('users/detail/' . $id))->with('success', 'Profil diupdate');
+}
+}
 
 
     public function delete($id)
@@ -137,20 +156,32 @@ class Users extends BaseController
         $this->users->delete($id);
 
         return redirect()->to('/users')->with('success', 'User berhasil dihapus!');
-    }
-    // sampai sini
-
-    public function detail($id)
-    {
-        $user = $this->users->find($id);
-
-        if (!$user) {
-            return redirect()->to('/users')->with('error', 'Data tidak ditemukan');
-        }
-
-        return view('users/detail', ['user' => $user]);
+        
+    }    
+    public function detail($id = null)
+{
+    // 1. Jika ID kosong (misal dipanggil dari tombol kembali yang salah), 
+    // otomatis ambil ID dari user yang sedang login
+    if ($id === null) {
+        $id = session()->get('id');
     }
 
+    // 2. Proteksi: Cegah user biasa ngintip profil orang lain
+    if (session()->get('role') != 'admin' && session()->get('id') != $id) {
+        return redirect()->to('/dashboard')->with('error', 'Kamu tidak punya akses ke profil tersebut.');
+    }
+
+    // 3. Cari datanya
+    $user = $this->users->find($id);
+
+    // 4. Jika data tidak ada di database
+    if (!$user) {
+        return redirect()->to('/users')->with('error', 'Data tidak ditemukan');
+    }
+
+    // 5. Kirim ke view (Hapus tanda "/" di akhir nama view)
+    return view('users/detail', ['user' => $user]);
+}
     public function print()
     {
         $keyword = $this->request->getGet('keyword');
